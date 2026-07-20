@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../Application/Services.csproj" />
+  <Project Path="../Infrastructure/Respoitories.csproj" />
+  <Project Path="ValKvotenApi.csproj" />
+</Solution>

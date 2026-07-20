@@ -1,0 +1,6 @@
+@ValKvotenApi_HostAddress = http://localhost:5107
+
+GET {{ValKvotenApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
