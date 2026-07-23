@@ -1,10 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Entities;
 
-namespace Respoitories.Data
+namespace Repositories.Data
 {
-    public class AppDbContext 
+    public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<ElectionResult> ElectionResults { get; set; }
+        public DbSet<Election> Elections { get; set; }
+        public DbSet<Municipality> Municipalities { get; set; }
+        public DbSet<PoliticalParty> PoliticalParties { get; set; }
+        public DbSet<User> Users { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        }
     }
 }
