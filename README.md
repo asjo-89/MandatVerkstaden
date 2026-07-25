@@ -12,6 +12,9 @@ ASP.NET Core / .Net 10
 Entity Framework Core
 SQL Server Express
 
+## Arbetssätt
+- Fluent Api används och relationer beskrivs från barnets sida.
+
 ## Tabeller
 - Elections = valets datum.
 - Municipalitys = kommun.
@@ -20,4 +23,5 @@ SQL Server Express
 - CouncilSeatAllocations = originalversion av platstilldelning i kommunfullmäktige.
 - CouncilSeatAllocationsScenarios = scenarier som användaren skapat och valt att spara gällande platstilldelning i kommunfullmäktige.
 - Users = information om användare.
+![alt text](image.png)
 
