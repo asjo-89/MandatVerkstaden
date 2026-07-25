@@ -12,8 +12,8 @@ using Repositories.Data;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260723175850_init")]
-    partial class init
+    [Migration("20260725191648_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,22 @@ namespace Repositories.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Repositories.Entities.CouncilSeatAllocations", b =>
+            modelBuilder.Entity("MunicipalityPoliticalParty", b =>
+                {
+                    b.Property<int>("MunicipalitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PoliticalPartiesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MunicipalitiesId", "PoliticalPartiesId");
+
+                    b.HasIndex("PoliticalPartiesId");
+
+                    b.ToTable("MunicipalityPoliticalParty", (string)null);
+                });
+
+            modelBuilder.Entity("Repositories.Entities.CouncilSeatAllocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,24 +49,24 @@ namespace Repositories.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("AllocationDivisor")
-                        .HasPrecision(7, 2)
-                        .HasColumnType("decimal(7,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("ComparisonNumber")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("ElectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ElectionResultId")
                         .HasColumnType("int");
 
                     b.Property<int>("MunicipalityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PartySeatCount")
+                    b.Property<int>("PartySeatCountBeforeAllocation")
                         .HasColumnType("int");
-
-                    b.Property<int>("PoliticalPartyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quotient")
-                        .HasPrecision(7, 2)
-                        .HasColumnType("decimal(7,2)");
 
                     b.Property<int>("SeatNumber")
                         .HasColumnType("int");
@@ -60,12 +75,71 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ElectionId");
 
-                    b.HasIndex("PoliticalPartyId");
+                    b.HasIndex("ElectionResultId");
 
                     b.HasIndex("MunicipalityId", "ElectionId", "SeatNumber")
                         .IsUnique();
 
                     b.ToTable("CouncilSeatAllocations");
+                });
+
+            modelBuilder.Entity("Repositories.Entities.CouncilSeatAllocationScenario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AllocationDivisor")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("ComparisonNumber")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ElectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MunicipalityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PartySeatCountBeforeAllocation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PoliticalPartyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ScenarioName")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("SeatNumber")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("VoteCountUsed")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionId");
+
+                    b.HasIndex("PoliticalPartyId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("MunicipalityId", "ElectionId", "SeatNumber", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("CouncilSeatAllocationsScenarios");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Election", b =>
@@ -136,7 +210,8 @@ namespace Repositories.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -159,7 +234,8 @@ namespace Repositories.Migrations
 
                     b.Property<string>("PartyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -185,12 +261,13 @@ namespace Repositories.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("HashedPassword")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsLockedOut")
                         .HasColumnType("bit");
@@ -202,8 +279,8 @@ namespace Repositories.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -216,22 +293,99 @@ namespace Repositories.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Repositories.Entities.CouncilSeatAllocations", b =>
+            modelBuilder.Entity("MunicipalityPoliticalParty", b =>
+                {
+                    b.HasOne("Repositories.Entities.Municipality", null)
+                        .WithMany()
+                        .HasForeignKey("MunicipalitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Repositories.Entities.PoliticalParty", null)
+                        .WithMany()
+                        .HasForeignKey("PoliticalPartiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Repositories.Entities.CouncilSeatAllocation", b =>
                 {
                     b.HasOne("Repositories.Entities.Election", "Election")
-                        .WithMany()
+                        .WithMany("CouncilSeatAllocations")
+                        .HasForeignKey("ElectionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Repositories.Entities.ElectionResult", "ElectionResult")
+                        .WithMany("CouncilSeatAllocations")
+                        .HasForeignKey("ElectionResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Repositories.Entities.Municipality", "Municipality")
+                        .WithMany("CouncilSeatAllocations")
+                        .HasForeignKey("MunicipalityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Election");
+
+                    b.Navigation("ElectionResult");
+
+                    b.Navigation("Municipality");
+                });
+
+            modelBuilder.Entity("Repositories.Entities.CouncilSeatAllocationScenario", b =>
+                {
+                    b.HasOne("Repositories.Entities.Election", "Election")
+                        .WithMany("CouncilSeatAllocationScenarios")
                         .HasForeignKey("ElectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Repositories.Entities.Municipality", "Municipality")
-                        .WithMany()
+                        .WithMany("CouncilSeatAllocationScenarios")
                         .HasForeignKey("MunicipalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Repositories.Entities.PoliticalParty", "PoliticalParty")
-                        .WithMany()
+                        .WithMany("CouncilSeatAllocationScenarios")
+                        .HasForeignKey("PoliticalPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Repositories.Entities.User", "User")
+                        .WithMany("CouncilSeatAllocationScenarios")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Election");
+
+                    b.Navigation("Municipality");
+
+                    b.Navigation("PoliticalParty");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Repositories.Entities.ElectionResult", b =>
+                {
+                    b.HasOne("Repositories.Entities.Election", "Election")
+                        .WithMany("ElectionResults")
+                        .HasForeignKey("ElectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Repositories.Entities.Municipality", "Municipality")
+                        .WithMany("ElectionResults")
+                        .HasForeignKey("MunicipalityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Repositories.Entities.PoliticalParty", "PoliticalParty")
+                        .WithMany("ElectionResults")
                         .HasForeignKey("PoliticalPartyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -243,31 +397,39 @@ namespace Repositories.Migrations
                     b.Navigation("PoliticalParty");
                 });
 
+            modelBuilder.Entity("Repositories.Entities.Election", b =>
+                {
+                    b.Navigation("CouncilSeatAllocationScenarios");
+
+                    b.Navigation("CouncilSeatAllocations");
+
+                    b.Navigation("ElectionResults");
+                });
+
             modelBuilder.Entity("Repositories.Entities.ElectionResult", b =>
                 {
-                    b.HasOne("Repositories.Entities.Election", "Election")
-                        .WithMany()
-                        .HasForeignKey("ElectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("CouncilSeatAllocations");
+                });
 
-                    b.HasOne("Repositories.Entities.Municipality", "Municipality")
-                        .WithMany()
-                        .HasForeignKey("MunicipalityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("Repositories.Entities.Municipality", b =>
+                {
+                    b.Navigation("CouncilSeatAllocationScenarios");
 
-                    b.HasOne("Repositories.Entities.PoliticalParty", "PoliticalParty")
-                        .WithMany()
-                        .HasForeignKey("PoliticalPartyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("CouncilSeatAllocations");
 
-                    b.Navigation("Election");
+                    b.Navigation("ElectionResults");
+                });
 
-                    b.Navigation("Municipality");
+            modelBuilder.Entity("Repositories.Entities.PoliticalParty", b =>
+                {
+                    b.Navigation("CouncilSeatAllocationScenarios");
 
-                    b.Navigation("PoliticalParty");
+                    b.Navigation("ElectionResults");
+                });
+
+            modelBuilder.Entity("Repositories.Entities.User", b =>
+                {
+                    b.Navigation("CouncilSeatAllocationScenarios");
                 });
 #pragma warning restore 612, 618
         }

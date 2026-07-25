@@ -10,5 +10,10 @@
         public string HashedPassword { get; set; } = null!;
         public int FailedLogIns { get; set; }
         public bool IsLockedOut { get; set; } = false;
+
+
+        #region Navigation properties
+        public ICollection<CouncilSeatAllocationScenario> CouncilSeatAllocationScenarios { get; init; } = [];
+        #endregion
     }
 }

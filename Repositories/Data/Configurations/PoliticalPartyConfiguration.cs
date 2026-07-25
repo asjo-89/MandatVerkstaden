@@ -12,9 +12,7 @@ namespace Repositories.Data.Configurations
                 .IsUnique();
 
             builder.Property(pp => pp.PartyName)
-                .IsRequired();
-
-            builder.Property(pp => pp.IsLocal)
+                .HasMaxLength(200)
                 .IsRequired();
         }
     }

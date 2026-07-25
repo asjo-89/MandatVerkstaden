@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Repositories.Entities
+﻿namespace Repositories.Entities
 {
     public class ElectionResult
     {
@@ -11,7 +7,7 @@ namespace Repositories.Entities
         public decimal VotePercentage { get; set; }
 
 
-        #region Navigation properies
+        #region Navigation properties
         public int MunicipalityId { get; set; }
         public Municipality Municipality { get; set; } = null!;
 
@@ -20,6 +16,8 @@ namespace Repositories.Entities
 
         public int ElectionId { get; set; }
         public Election Election { get; set; } = null!;
+
+        public ICollection<CouncilSeatAllocation> CouncilSeatAllocations { get; init; } = [];
         #endregion
     }
 }

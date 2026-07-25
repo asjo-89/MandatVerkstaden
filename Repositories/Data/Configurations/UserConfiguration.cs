@@ -19,15 +19,19 @@ namespace Repositories.Data.Configurations
                 .IsRequired();
 
             builder.Property(u => u.FirstName)
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .IsRequired();
 
             builder.Property(u => u.LastName)
                 .HasMaxLength(50)
                 .IsRequired();
 
+            builder.Property(u => u.HashedPassword)
+                .HasMaxLength(200)
+                .IsRequired();
+
             builder.Property(u => u.UserName)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .IsRequired();
         }
     }

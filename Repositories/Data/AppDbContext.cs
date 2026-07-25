@@ -9,6 +9,8 @@ namespace Repositories.Data
         {
         }
 
+        public DbSet<CouncilSeatAllocation> CouncilSeatAllocations { get; set; }
+        public DbSet<CouncilSeatAllocationScenario> CouncilSeatAllocationsScenarios { get; set; }
         public DbSet<ElectionResult> ElectionResults { get; set; }
         public DbSet<Election> Elections { get; set; }
         public DbSet<Municipality> Municipalities { get; set; }

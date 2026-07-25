@@ -1,28 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Repositories.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Repositories.Data.Configurations
 {
-    public class ElectionResultsConfiguration : IEntityTypeConfiguration<ElectionResult>
+    public class ElectionResultConfiguration : IEntityTypeConfiguration<ElectionResult>
     {
         public void Configure(EntityTypeBuilder<ElectionResult> builder)
         {
             #region Navigation
             builder.HasOne(er => er.Municipality)
-                .WithMany()
-                .HasForeignKey(er => er.MunicipalityId);
+                .WithMany(m => m.ElectionResults)
+                .HasForeignKey(er => er.MunicipalityId)
+                .HasPrincipalKey(m => m.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(er => er.PoliticalParty)
-                .WithMany()
-                .HasForeignKey(er => er.PoliticalPartyId);
+                .WithMany(pp => pp.ElectionResults)
+                .HasForeignKey(er => er.PoliticalPartyId)
+                .HasPrincipalKey(pp => pp.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(er => er.Election)
-                .WithMany()
-                .HasForeignKey(er => er.ElectionId);
+                .WithMany(e => e.ElectionResults)
+                .HasForeignKey(er => er.ElectionId)
+                .HasPrincipalKey(e => e.Id)
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
 
             builder.HasIndex(er => new
