@@ -21,6 +21,11 @@ namespace Repositories.Data.Configurations
             builder.Property(m => m.Name)
                 .HasMaxLength(100)
                 .IsRequired();
+
+            // VotingDistrictsCount can never be 0 or a negative number.
+            builder.ToTable(table => table.HasCheckConstraint(
+                "CK_Municipality_VotingDistrictsCount_Positive",
+                "[VotingDistrictsCount] >= 1"));
         }
     }
 }

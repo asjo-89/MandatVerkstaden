@@ -15,6 +15,10 @@ SQL Server Express
 ## Arbetssätt
 - Fluent Api används och relationer beskrivs från barnets sida.
 
+## Felhantering
+Serilog används för att spara exceptions till fil Logs/log.txt,
+I program.cs finns middleware för hantering av exceptions.
+
 ## Tabeller
 - Elections = valets datum.
 - Municipalitys = kommun.
