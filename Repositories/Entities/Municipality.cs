@@ -5,7 +5,6 @@
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public int CouncilSeatCount { get; set; }
-        public int VotingDistrictsCount { get; set; }
 
 
         #region Navigation properties

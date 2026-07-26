@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Repositories.Entities;
+using System.Text.Json;
 
 namespace Repositories.Data.Configurations
 {
@@ -22,10 +23,22 @@ namespace Repositories.Data.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
 
-            // VotingDistrictsCount can never be 0 or a negative number.
-            builder.ToTable(table => table.HasCheckConstraint(
-                "CK_Municipality_VotingDistrictsCount_Positive",
-                "[VotingDistrictsCount] >= 1"));
+            var file = Path.Combine(AppContext.BaseDirectory, "SeedData", "Municipalities.txt");
+            var json = File.ReadAllText(file);
+
+            var municipalities = JsonSerializer.Deserialize<List<Municipality>>(
+                json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                })!;
+
+            builder.HasData(
+                municipalities.Select((m, index) => new Municipality
+                {
+                    Id = index + 1,
+                    Name = m.Name
+                }));
         }
     }
 }

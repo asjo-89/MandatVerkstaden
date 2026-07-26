@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Data;
 
@@ -11,9 +12,11 @@ using Repositories.Data;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260726152123_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1964,56 +1967,6 @@ namespace Repositories.Migrations
                         .IsUnique();
 
                     b.ToTable("PoliticalParties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsLocal = false,
-                            PartyName = "Arbetarepartiet-Socialdemokraterna"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsLocal = false,
-                            PartyName = "Moderaterna"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsLocal = false,
-                            PartyName = "Sverigedemokraterna"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IsLocal = false,
-                            PartyName = "Centerpartiet"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IsLocal = false,
-                            PartyName = "Vänsterpartiet"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IsLocal = false,
-                            PartyName = "Kristdemokraterna"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            IsLocal = false,
-                            PartyName = "Liberalerna"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            IsLocal = false,
-                            PartyName = "Miljöpartiet de gröna"
-                        });
                 });
 
             modelBuilder.Entity("Repositories.Entities.User", b =>
