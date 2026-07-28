@@ -23,6 +23,7 @@ namespace Repositories.Data.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
 
+            #region SEED
             var file = Path.Combine(AppContext.BaseDirectory, "SeedData", "Municipalities.txt");
             var json = File.ReadAllText(file);
 
@@ -39,6 +40,7 @@ namespace Repositories.Data.Configurations
                     Id = index + 1,
                     Name = m.Name
                 }));
+            #endregion
         }
     }
 }

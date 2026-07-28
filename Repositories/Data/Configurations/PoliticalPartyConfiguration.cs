@@ -16,6 +16,7 @@ namespace Repositories.Data.Configurations
                 .HasMaxLength(200)
                 .IsRequired();
 
+            #region SEED
             var file = Path.Combine(AppContext.BaseDirectory, "SeedData", "PoliticalParties.txt");
             var json = File.ReadAllText(file);
 
@@ -32,6 +33,7 @@ namespace Repositories.Data.Configurations
                     Id = index + 1,
                     PartyName = m.PartyName
                 }));
+            #endregion
         }
     }
 }

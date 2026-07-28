@@ -19,6 +19,9 @@ SQL Server Express
 Serilog används för att spara exceptions till fil Logs/log.txt,
 I program.cs finns middleware för hantering av exceptions.
 
+## VIKTIGT
+- Data seedas in till tabellerna Municipality och PoliticalParties vid migration. Datan finns i .txt-filer som ligger i root.
+
 ## Tabeller
 - Elections = valets datum.
 - Municipalitys = kommun.
