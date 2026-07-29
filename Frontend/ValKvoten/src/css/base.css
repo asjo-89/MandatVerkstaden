@@ -4,15 +4,26 @@
     box-sizing: border-box;
 }
 
-html,
-body, 
-#root,
-main  {
+html {
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     background-color: var(--dark-white);
     color: var(--font-clr-primary);
-    font-size: 16px; 
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;    
+}
+
+h1 {
+    margin: 0;
+}
+
+ul, 
+li {
+    list-style: none;
+    color: var(--font-clr-white);
 }
 
 a {
@@ -20,56 +31,68 @@ a {
     color: inherit;
 }
 
-ul, 
-li {
-    list-style: none;
-    color: var(--font-clr-white);
-    font-size: clamp(1rem, 1.125em, 2vw);
-}
-
-.header-container {
+.navigation {
     width: 100%;
-    height: clamp(2rem, 60px, 5rem);
+    min-height: 50px;
     display: flex;
-    padding: 1rem 1.5rem;
     align-items: center;
     justify-content: space-between;
+    padding: 1rem 1.5rem;
     background-color: var(--primary-dark);
+
+    @media (min-width: 1024px) {
+        width: clamp(20vw, 250px, 320px);
+        min-height: 100vh;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+.navigation h1 {
+    width: 100%;
+
+    @media (min-width: 1024px) {
+        text-align: center;
+    }
 }
 
 .logo-text {
     color: var(--accent-light);
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-size: clamp(1.8rem, 3rem, 2vw);
+
+    @media (min-width: 1024px) {
+        font-size: clamp(2rem, 3rem, 2.5vw);
+    }
 }
 
 .logo-text span {
     color: var(--accent-medium);
 }
 
-.menu-container {
-    max-height: 100%;
-    background-color: var(--primary-dark);
+.navigation li {
+    font-size: clamp(1.2rem, 1.8rem, 1.3vw);
 }
 
+/* Mobile and tablet menu */
 .hamburger-menu {
     anchor-name: --hamburger;
-    width: clamp(2rem, 2.5vw, 3rem);
+    width: clamp(2.5rem, 2.5vw, 3rem);
     aspect-ratio: 1/1;
     background-color: var(--primary-dark);
     border: none;
     color: var(--white);
     font-size: 1.5rem;
     cursor: pointer;
+
+    @media (min-width: 1024px) {
+        display: none;
+    }
 }
 
 .menu-popover {
-    width: clamp(10rem, 20vw, 15rem);
+    width: clamp(11rem, 20vw, 15rem);
     height: auto;
     flex-direction: column;
     align-items: flex-start;
@@ -80,6 +103,7 @@ li {
     padding: 1.5rem;
     opacity: 0;
     translate: 100% 0;
+    margin-top: 0.5rem;
 
     transition-property: display, overlay, opacity, translate;
     transition-duration: 0.4s;
@@ -89,6 +113,10 @@ li {
     @supports (anchor-name: --hamburger) {
         position-anchor: --hamburger;
         position-area: bottom right;
+    }
+
+    @media (min-width: 1024px) {
+        display: none;
     }
 }
 
@@ -101,13 +129,17 @@ li {
         opacity: 0;
         translate: 100% 0;
     }
+
+    @media (min-width: 1024px) {
+        display: none;
+    }
 }
 
 .menu-popover li {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.5rem;
     flex-wrap: nowrap;
 }
@@ -116,3 +148,35 @@ li {
     margin-bottom: 1rem;
 }
 
+/* Desktop menu */
+.sidebar-menu {
+    display: none;
+
+    & li {
+        display: flex;
+        width: 100%;
+    }
+
+    .nav-opt {
+        width: 100%;
+        padding: .5rem;
+        border-radius: 0.5rem;
+        transition: all 0.25s ease-in-out;
+        display: flex;
+        gap: 0.8rem;
+    }
+
+    .nav-opt:hover {
+        font-size: clamp(1.1rem, 1.9rem, 1.4vw);
+        background-color: var(--accent-medium);
+    }
+    
+    @media (min-width: 1024px) {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+}

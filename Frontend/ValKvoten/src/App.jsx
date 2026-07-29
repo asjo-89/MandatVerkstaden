@@ -7,27 +7,33 @@ function App() {
 
   return (
     <>
-      <main className="manrope-regular">
-        <header className="header-container">
-          <div className="logo-container">
-            <h1 className="logo-text manrope-extra-bold">
-              <a href="#">Val<span>Kvoten</span></a>
-            </h1>
-          </div>
+      <header>
+        <nav className="navigation">
+          <h1><a href="#" className="logo-text manrope-extra-bold">Val<span>Kvoten</span></a></h1>
+          
+          {/* Mobile and tablet menu */}
+          <button className="hamburger-menu" popoverTarget="hamburger" type="button" aria-label="Open menu"><LuMenu /></button>
+          <ul popover="auto" id="hamburger" className="menu-popover">
+            <li><a href="#" className="nav-opt manrope-bold"><AiOutlineDashboard /> Översikt</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><TbBuildingCommunity /> Kommuner</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><TbUsersGroup /> Partier</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
+          </ul>
 
-          <div className="menu-container">
-            <button className="hamburger-menu" popoverTarget="hamburger" type="button" aria-label="Open menu"><LuMenu /></button>
-            <nav className="navigation">
-              <ul popover="auto" id="hamburger" className="menu-popover" >
-                <li><a href="#" className="nav-opt manrope-bold"><AiOutlineDashboard /> Översikt</a></li>
-                <li><a href="#" className="nav-opt manrope-bold"><TbBuildingCommunity /> Kommuner</a></li>
-                <li><a href="#" className="nav-opt manrope-bold"><TbUsersGroup /> Partier</a></li>
-                <li><a href="#" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
-                <li><a href="#" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
-              </ul>
-            </nav>
-          </div>
-        </header>
+          {/* Desktop menu */}
+          <ul className="sidebar-menu">
+            <li><a href="#" className="nav-opt manrope-bold"><AiOutlineDashboard /> Översikt</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><TbBuildingCommunity /> Kommuner</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><TbUsersGroup /> Partier</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
+            <li><a href="#" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main className="manrope-regular">
+
+
       </main>
     </>
   )
