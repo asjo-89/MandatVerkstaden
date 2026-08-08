@@ -1,0 +1,36 @@
+.button,
+.btn {
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.button-primary,
+.btn-primary {
+    background-color: var(--blue-grey);
+    color: var(--font-clr-white);
+    box-shadow: inset 0px 0px 4px var(--dark-blue-grey);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: var(--dark-blue-grey);
+    }
+}
+
+.button-submit,
+.btn-confirm {
+    background-color: var(--green);
+    color: var(--font-clr-white);
+    box-shadow: inset 0px 0px 4px var(--grey);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: var(--dark-green);
+    }
+}
+
+.btn-login {
+    width: 100%;
+}

@@ -3,11 +3,13 @@
     public class Municipality
     {
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public int CouncilSeatCount { get; set; }
+        public int MunicipalityCode { get; set; }
+        public string ElectionAreaName { get; set; } = null!;
 
 
         #region Navigation properties
+        public ICollection<HistoryCouncilSeatCount> HistoryCouncilSeatCounts { get; init; } = [];
+        public ICollection<ElectionDistrict> ElectionDistricts { get; set; } = [];
         public ICollection<CouncilSeatAllocation> CouncilSeatAllocations { get; init; } = [];
         public ICollection<CouncilSeatAllocationScenario> CouncilSeatAllocationScenarios { get; init; } = [];
         public ICollection<ElectionResult> ElectionResults { get; init; } = [];
