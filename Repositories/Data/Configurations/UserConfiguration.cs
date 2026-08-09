@@ -26,7 +26,7 @@ namespace Repositories.Data.Configurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(u => u.HashedPassword)
+            builder.Property(u => u.PasswordHash)
                 .HasMaxLength(200)
                 .IsRequired();
 
