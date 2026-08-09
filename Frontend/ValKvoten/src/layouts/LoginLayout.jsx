@@ -1,4 +1,5 @@
-import LoginForm from '../components/forms/LoginForm';
+import { Outlet } from 'react-router-dom';
+
 const LoginLayout = () => {
   return (
     <div className="wrapper login-wrapper">
@@ -7,7 +8,7 @@ const LoginLayout = () => {
         </header>
 
         <main>
-            <LoginForm />
+            <Outlet />
         </main>
     </div>
   )

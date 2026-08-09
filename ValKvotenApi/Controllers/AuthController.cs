@@ -38,7 +38,10 @@ namespace ValKvotenApi.Controllers
                 request.Password);
 
             if (error is not null || token is null || result is null)
-                return Unauthorized(error);
+                return Unauthorized(new
+                {
+                    message = error
+                });
 
             SetAuthCookies(token);
             return Ok(new UserResponse(result.Username, result.Role));

@@ -1,8 +1,8 @@
 
-export const ConfirmButton = ({ btnText, onClick, className }) => {
+export const ConfirmButton = ({ btnText, onClick, className, btnType }) => {
   return (
         <>
-            <button className={`btn btn-confirm manrope-semibold ${className || ""}`} onClick={onClick}>{btnText || ""}</button>
+            <button type={btnType || "button"} className={`btn btn-confirm manrope-semibold ${className || ""}`} onClick={onClick}>{btnText || ""}</button>
         </>
   )
 }

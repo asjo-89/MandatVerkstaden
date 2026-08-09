@@ -1,5 +1,5 @@
 import Menu from '../components/menu';
-import Dashboard from '../pages/Dashboard';
+import { Outlet } from 'react-router-dom';
 
 const MainLayout = () => {
   return (
@@ -9,7 +9,7 @@ const MainLayout = () => {
         </header>
 
         <main>
-          <Dashboard />
+          <Outlet />
         </main>
       </div>
   )
