@@ -9,8 +9,19 @@ namespace Repositories.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Election> Elections { get; set; }
+        public DbSet<ElectionConstituency> ElectionConstituencies { get; set; }
+        public DbSet<Municipality> Municipalities { get; set; }
+        public DbSet<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; }
+        public DbSet<OriginalCouncilSeatAllocation> OriginalCouncilSeatAllocations { get; set; }
+        public DbSet<OriginalElectionResultSet> OriginalElectionResultSets { get; set; }
+        public DbSet<PartyGroup> PartyGroups { get; set; }
+        public DbSet<PoliticalParty> PoliticalParties { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Scenario> Scenarios { get; set; }
+        public DbSet<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; }
+        public DbSet<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
