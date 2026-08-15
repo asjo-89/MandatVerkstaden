@@ -70,6 +70,14 @@ a {
     color: inherit;
 }
 
+.show-flex {
+    display: flex;
+}
+
+.hide {
+    display: none;
+}
+
 .content-container {
     width: 100%;
     max-width: 1200px;
@@ -102,6 +110,16 @@ a {
     text-align: center;
     background-color: var(--light-blue-grey);
     border: 1px solid var(--grey);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.alert-success {
+    color: var(--dark-green);
+    font-size: 0.9rem;
+    text-align: center;
+    background-color: var(--light-green);
+    border: 1px solid var(--green);
     padding: 0.5rem;
     border-radius: 0.5rem;
 }
@@ -161,4 +179,15 @@ input {
     & a:hover {
         color: var(--accent);
     }
+}
+
+
+.input-error {
+    border: 1px solid var(--dark-red);
+    background-color: var(--light-red);
+}
+
+.input-error-text {
+    color: var(--dark-red);
+    font-size: 0.9rem;
 }

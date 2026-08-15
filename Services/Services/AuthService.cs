@@ -19,7 +19,10 @@ namespace Services.Services
             if (await _users.UserNameExistsAsync(username))
                 return (false, "Användarnamnet är upptaget.");
 
-            var user = new User
+            if(await _users.EmailExistsAsync(email))
+                return (false, "Epostadressen är redan registrerad på ett konto.");
+
+            var newUser = new User
             {
                 UserName = username,
                 Email = email,
@@ -29,7 +32,7 @@ namespace Services.Services
                 Role = "User"
             };
 
-            await _users.AddUserAsync(user);
+            await _users.AddUserAsync(newUser);
             return (true, null);
         }
         public async Task<(AuthResult? Result, AuthTokens? Tokens, string? Error)> LoginAsync(string username, string password)

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginLayout from "./layouts/LoginLayout";
+import RegisterForm from "./components/forms/RegisterForm";
 import MainLayout from "./layouts/MainLayout";
 import LoginForm from "./components/forms/LoginForm";
 import ProtectedRoute from "./components/helpers/ProtectedRoute";
@@ -16,6 +17,7 @@ function App() {
         
         <Route element={<LoginLayout />}>
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>

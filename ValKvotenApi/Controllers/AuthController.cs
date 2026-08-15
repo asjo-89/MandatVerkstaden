@@ -20,20 +20,25 @@ namespace ValKvotenApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            var (success, error) = await _authService.RegisterAsync(
-                request.Username, 
+            if(!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            (bool success, string? error) = await _authService.RegisterAsync(
+                request.UserName, 
                 request.Email, 
                 request.FirstName, 
                 request.LastName, 
                 request.Password);
 
-            return success ? Ok() : BadRequest(error);
+            return success ? Ok() : BadRequest(new { message = error });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            var (result, token, error) = await _authService.LoginAsync(
+            (AuthResult? result, AuthTokens? token, string? error) = await _authService.LoginAsync(
                 request.Username, 
                 request.Password);
 
@@ -53,7 +58,7 @@ namespace ValKvotenApi.Controllers
             if (!Request.Cookies.TryGetValue("request_token", out var refreshTokenValue))
                 return Unauthorized();
 
-            var (token, error) = await _authService.RefreshTokenAsync(refreshTokenValue);
+            (AuthTokens? token, string? error) = await _authService.RefreshTokenAsync(refreshTokenValue);
 
             if(error is not null || token is null)
             {

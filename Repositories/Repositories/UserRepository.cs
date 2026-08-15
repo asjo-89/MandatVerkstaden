@@ -2,9 +2,6 @@
 using Repositories.Data;
 using Repositories.Entities;
 using Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Repositories.Repositories
 {
@@ -28,6 +25,9 @@ namespace Repositories.Repositories
 
         public Task<bool> UserNameExistsAsync(string userName) =>
             _context.Users.AnyAsync(u => u.UserName == userName);
+
+        public Task<bool> EmailExistsAsync(string email) =>
+            _context.Users.AnyAsync(u => u.Email == email);
         #endregion
 
         #region UPDATE

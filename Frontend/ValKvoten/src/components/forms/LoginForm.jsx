@@ -2,6 +2,7 @@ import { ConfirmButton } from "../buttons/ConfirmButton"
 import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
+import Input from "../Inputs/Input"
 
 const LoginForm = () => {
   const {login, error } = useAuth();
@@ -25,19 +26,17 @@ const LoginForm = () => {
       <h2 className="manrope-semibold text-center">Logga in</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group input-group-medium">
-          <label htmlFor="username" className="manrope-semibold">Användarnamn</label>
-          <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Ange användarnamn" />
+          <Input id="username" name="username" htmlFor="username" label="Användarnamn" placeholder="Ange användarnamn" type="text" onChange={(e) => setUsername(e.target.value)} />
         </div>
         <div className="input-group input-group-medium">
-          <label htmlFor="password" className="manrope-semibold">Lösenord</label>
-          <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Ange lösenord" />
-        </div>
+          <Input id="password" name="password" htmlFor="password" label="Lösenord" placeholder="Ange lösenord" type="password" onChange={(e) => setPassword(e.target.value)} />
+        </div>        
         {error && <p className="alert-danger">{error.message || error}</p>}
         <ConfirmButton btnType="submit" className="btn-login" btnText="Logga in" />
       </form>
       <div className="login-footer">
         <p>Har du inget konto?</p> 
-        <a href="#">Registrera dig</a>
+        <a href="/register">Registrera dig</a>
       </div>
     </div>
   )

@@ -1,7 +1,4 @@
 ﻿using Repositories.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Repositories.Interfaces
 {
@@ -9,6 +6,7 @@ namespace Repositories.Interfaces
     {
         Task<User?> GetByUserNameAsync(string userName);
         Task<bool> UserNameExistsAsync(string userName);
+        Task<bool> EmailExistsAsync(string email);
         Task<User> AddUserAsync(User user);
     }
 }
