@@ -361,5 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/ValKvotenApi/appsettings.json
-/ValKvotenApi/appsettings.Development.json
+/MandatVerkstadenApi/appsettings.json
+/MandatVerkstadenApi/appsettings.Development.json

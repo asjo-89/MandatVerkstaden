@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
 using System.Security.Principal;
-using ValKvotenApi.Dtos;
+using MandatVerkstadenApi.Dtos;
 
-namespace ValKvotenApi.Controllers
+namespace MandatVerkstadenApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

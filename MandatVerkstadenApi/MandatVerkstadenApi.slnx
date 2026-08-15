@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="../Repositories/Repositories.csproj" />
   <Project Path="../Services/Services.csproj" />
-  <Project Path="ValKvotenApi.csproj" />
+  <Project Path="MandatVerkstadenApi.csproj" />
 </Solution>

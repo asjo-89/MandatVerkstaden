@@ -1,3 +1,3 @@
-﻿namespace ValKvotenApi.Dtos;
+﻿namespace   MandatVerkstadenApi.Dtos;
 
 public record UserResponse(string username, string role);
