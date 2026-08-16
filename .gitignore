@@ -363,3 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 /MandatVerkstadenApi/appsettings.json
 /MandatVerkstadenApi/appsettings.Development.json
+/ElectionConstituency-2022.csv
+/ElectionConstituency-2026.csv
+/fordelning-av-mandat-2022-och-2026.csv
+/Municipalities-2022.csv
+/Municipalities-2026.csv
