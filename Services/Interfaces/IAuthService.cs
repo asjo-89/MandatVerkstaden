@@ -1,12 +1,6 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Services.Models.Auth;
 
 namespace Services.Interfaces;
-
-public record AuthResult(string Username, string Role);
-public record AuthTokens(string AccessToken, string RefreshToken);
 
 public interface IAuthService
 {

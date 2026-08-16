@@ -1,12 +1,10 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
-using System.Security.Principal;
 using MandatVerkstadenApi.Dtos;
+using MandatVerkstadenApi.Dtos.Requests;
+using Services.Models.Auth;
 
 namespace MandatVerkstadenApi.Controllers
 {

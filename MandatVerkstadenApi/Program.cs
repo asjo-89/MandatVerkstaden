@@ -39,14 +39,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ValKvoten API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MandatVerkstadens API", Version = "v1" });
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddSingleton<ITokenService>(
-    new TokenService(jwtKey, jwtIssuer, jwtAudience));
+builder.Services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
+builder.Services.AddScoped<IMunicipalityService, MunicipalityService>();
+
+builder.Services.AddSingleton<ITokenService>(new TokenService(jwtKey, jwtIssuer, jwtAudience));
 
 const string CorsPolicy = "Frontend";
 builder.Services.AddCors(options =>

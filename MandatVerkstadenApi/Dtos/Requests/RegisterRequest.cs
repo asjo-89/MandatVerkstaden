@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace MandatVerkstadenApi.Dtos;
+namespace MandatVerkstadenApi.Dtos.Requests;
 
 public record RegisterRequest : IValidatableObject {
     [Required(ErrorMessage = "Förnamn är obligatoriskt.")]

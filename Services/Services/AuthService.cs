@@ -1,6 +1,7 @@
 ﻿using Repositories.Entities;
 using Repositories.Interfaces;
 using Services.Interfaces;
+using Services.Models.Auth;
 
 namespace Services.Services
 {
