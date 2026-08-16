@@ -9,6 +9,8 @@ public class OriginalCouncilSeatAllocation
     public decimal AllocationDivisor { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
+
+
     #region Navigation properties
     public int PoliticalPartyId { get; set; }
     public PoliticalParty PoliticalParty { get; set; } = null!;

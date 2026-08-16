@@ -13,7 +13,13 @@ public class User
     public bool IsLockedOut { get; set; } = false;
 
 
+
+
     #region Navigation properties
+    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; init; } = [];
+    public ICollection<PartyGroup> PartyGroups { get; set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; init; } = [];
+    public ICollection<PoliticalParty> PoliticalParties { get; set; } = [];
+    public ICollection<Scenario> Scenarios { get; set; } = [];
     #endregion
 }

@@ -8,6 +8,8 @@ public class ScenarioCouncilSeatAllocation
     public decimal ComparisonNumber { get; set; }
     public decimal AllocationDivisor { get; set; }
 
+
+
     #region Navigation properties
     public int ScenarioId { get; set; }
     public Scenario Scenario { get; set; } = null!;

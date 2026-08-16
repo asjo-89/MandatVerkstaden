@@ -6,11 +6,17 @@ public class Scenario
     public required string Name { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
+
+
     #region Navigation properties
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 
     public int OriginalElectionResultSetId { get; set; }
     public OriginalElectionResultSet OriginalElectionResultSet { get; set; } = null!;
+
+    public ICollection<PartyGroup> PartyGroups { get; set; } = [];
+    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = [];
+    public ICollection<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; } = [];
     #endregion 
 }

@@ -6,6 +6,8 @@ public class ScenarioConstituencyVoteResult
     public int NumberOfVotes { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
+
+
     #region Navigation properties
     public int PoliticalPartyId { get; set; }
     public PoliticalParty PoliticalParty { get; set; } = null!;

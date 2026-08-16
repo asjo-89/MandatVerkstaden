@@ -11,12 +11,15 @@ namespace Repositories.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.HasIndex(rt => rt.TokenHash)
+            builder
+                .HasIndex(rt => rt.TokenHash)
                 .IsUnique();
 
-            builder.HasOne(rt => rt.User)
+            builder
+                .HasOne(rt => rt.User)
                 .WithMany(u => u.RefreshTokens)
-                .HasForeignKey(rt => rt.UserId);
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
