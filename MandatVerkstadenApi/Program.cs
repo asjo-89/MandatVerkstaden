@@ -100,8 +100,8 @@ builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("AuthPolicy", opt =>
     {
-        opt.Window = TimeSpan.FromMinutes(15);
-        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(5);
+        opt.PermitLimit = 10;
         opt.QueueLimit = 0;
     });
 });
@@ -150,7 +150,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(CorsPolicy);
-app.UseRateLimiter();
+
+if(!app.Environment.IsDevelopment())
+{
+    app.UseRateLimiter();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

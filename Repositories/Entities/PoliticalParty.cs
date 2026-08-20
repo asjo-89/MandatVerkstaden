@@ -5,6 +5,7 @@ public class PoliticalParty
     public int Id { get; set; }
     public required string Name { get; set; }
     public bool IsLocal { get; set; } = false;
+    public bool IsParliamentary { get; set; } = false;
 
 
 
