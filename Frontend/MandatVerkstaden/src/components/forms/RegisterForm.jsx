@@ -1,9 +1,10 @@
 import { ConfirmButton } from "../buttons/ConfirmButton"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Input from "../Inputs/Input"
+import { Input } from "../inputs/Input"
 import { ApiFetch } from "../helpers/ApiFetch"
-import API_URL from '../../ApiUrl';
+import API_URL from '../../ApiUrl'
+import NormalizeErrors from "../helpers/NormalizeErrors"
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -19,16 +20,18 @@ const RegisterForm = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  const normalizeErrors = (errors) => {
-    console.log("Normalizing errors:", errors);
-    const normalizedErrors = {};
-    if(errors && typeof errors === "object") {
-      Object.entries(errors).forEach(([key, message]) => {
-        normalizedErrors[key.toLowerCase()] = Array.isArray(message) ? message.join(", \n") : message;
-      })
-    }
-    return normalizedErrors;
-  }
+  const normalizeErrors = NormalizeErrors;
+  
+  // const normalizeErrors = (errors) => {
+  //   console.log("Normalizing errors:", errors);
+  //   const normalizedErrors = {};
+  //   if(errors && typeof errors === "object") {
+  //     Object.entries(errors).forEach(([key, message]) => {
+  //       normalizedErrors[key.toLowerCase()] = Array.isArray(message) ? message.join(", \n") : message;
+  //     })
+  //   }
+  //   return normalizedErrors;
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,7 +71,8 @@ const RegisterForm = () => {
             label="Förnamn" 
             placeholder="Ange förnamn" 
             type="text" 
-            onChange={(e) => setFirstName(e.target.value)} />
+            onChange={(e) => setFirstName(e.target.value)}
+            value={firstName} />
           <span className={`input-error-text ${modelErrors.firstname ? 'show-flex' : 'hide'}`}>{modelErrors.firstname}</span>
         </div>
         <div className="input-group input-group-medium">
@@ -80,7 +84,8 @@ const RegisterForm = () => {
             label="Efternamn" 
             placeholder="Ange efternamn" 
             type="text" 
-            onChange={(e) => setLastName(e.target.value)} />
+            onChange={(e) => setLastName(e.target.value)}
+            value={lastName} />
           <span className={`input-error-text ${modelErrors.lastname ? 'show-flex' : 'hide'}`}>{modelErrors.lastname}</span>
         </div>
         <div className="input-group input-group-medium">
@@ -92,7 +97,8 @@ const RegisterForm = () => {
             label="Användarnamn" 
             placeholder="Ange användarnamn" 
             type="text" 
-            onChange={(e) => setUsername(e.target.value)} />
+            onChange={(e) => setUsername(e.target.value)}
+            value={username} />
           <span className={`input-error-text ${modelErrors.username ? 'show-flex' : 'hide'}`}>{modelErrors.username}</span>
         </div>
         <div className="input-group input-group-medium">
@@ -104,7 +110,8 @@ const RegisterForm = () => {
             label="E-post" 
             placeholder="Ange e-post" 
             type="email" 
-            onChange={(e) => setEmail(e.target.value)} />
+            onChange={(e) => setEmail(e.target.value)}
+            value={email} />
           <span className={`input-error-text ${modelErrors.email ? 'show-flex' : 'hide'}`}>{modelErrors.email}</span>
         </div>
         <div className="input-group input-group-medium">
@@ -116,7 +123,8 @@ const RegisterForm = () => {
             label="Lösenord" 
             placeholder="Ange lösenord" 
             type="password" 
-            onChange={(e) => setPassword(e.target.value)} />
+            onChange={(e) => setPassword(e.target.value)}
+            value={password} />
           <span className={`input-error-text ${modelErrors.password ? 'show-flex' : 'hide'}`}>{modelErrors.password}</span>
         </div>   
         <div className="input-group input-group-medium">
@@ -128,7 +136,8 @@ const RegisterForm = () => {
             label="Bekräfta lösenord" 
             placeholder="Ange lösenord igen" 
             type="password" 
-            onChange={(e) => setMatchingPassword(e.target.value)} />
+            onChange={(e) => setMatchingPassword(e.target.value)} 
+            value={matchingPassword} />
           <span className={`input-error-text ${modelErrors.matchingpassword ? 'show-flex' : 'hide'}`}>{modelErrors.matchingpassword}</span>
         </div>       
 

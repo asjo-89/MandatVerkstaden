@@ -15,6 +15,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
@@ -33,6 +34,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         return success ? Ok() : BadRequest(new { message = error });
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
@@ -50,11 +52,12 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(new UserResponse(result.Username, result.Role));
     }
 
+    [AllowAnonymous]
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken()
     {
-        if (!Request.Cookies.TryGetValue("request_token", out var refreshTokenValue))
-            return Unauthorized();
+        if (!Request.Cookies.TryGetValue("refresh_token", out var refreshTokenValue))
+            return Unauthorized();  
 
         (AuthTokens? token, string? error) = await _authService.RefreshTokenAsync(refreshTokenValue);
 
@@ -68,6 +71,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
@@ -79,8 +83,8 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
     [HttpGet("current-user")]
-    [Authorize]
     public IActionResult CurrentUser()
+
     {
         return Ok(new UserResponse(
             User.Identity?.Name ?? "",

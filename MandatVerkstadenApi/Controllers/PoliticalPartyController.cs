@@ -8,12 +8,13 @@ using System.Security.Claims;
 
 namespace MandatVerkstadenApi.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class PoliticalPartyController(IPoliticalPartyService service) : Controller
 {
     private readonly IPoliticalPartyService _service = service;
 
 
-    [Authorize]
     [HttpPost("add")]
     public async Task<IActionResult> Add(AddPoliticalPartyRequest request)
     {

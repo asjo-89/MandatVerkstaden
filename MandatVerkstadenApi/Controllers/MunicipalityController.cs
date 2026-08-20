@@ -9,7 +9,6 @@ using Services.Models;
 
 namespace MandatVerkstadenApi.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class MunicipalityController(IMunicipalityService service) : ControllerBase

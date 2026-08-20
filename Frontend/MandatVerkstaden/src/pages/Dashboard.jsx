@@ -1,19 +1,19 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 
 function Dashboard() {
-  const [isLocal, setIsLocal] = useState(''); 
-  const [isChangeParties, setIsChangeParties] = useState('');
-  const [isMultipleElectorialDistricts, setIsMultipleElectorialDistricts] = useState('');
+//   const [isLocal, setIsLocal] = useState(''); 
+//   const [isChangeParties, setIsChangeParties] = useState('');
+//   const [isMultipleElectorialDistricts, setIsMultipleElectorialDistricts] = useState('');
 
   return (
     <>
-        <div className="content-container">
+        {/* <div className="content-container">
             <h2 className="manrope-extra-bold">Skapa ett scenario</h2>
             <div className="form-container">
                 <p className="form-description">Med ett scenario kan du laborera med olika valresultat och se hur de påverkar utfallet.</p>
-                
+                 */}
     {/* Lägga till ett scenario */}
-                <form>
+                {/* <form>
                     <div className="input-group">
                         <label htmlFor="hasMultipleElectorialDistricts" className="manrope-semibold">Har kommunen flera valkretsar?</label>
                         <select id="hasMultipleElectorialDistricts" name="isMultipleElectorialDistricts" value={isMultipleElectorialDistricts} onChange={(e) => setIsMultipleElectorialDistricts(e.target.value)}>
@@ -113,9 +113,9 @@ function Dashboard() {
                             </div>
                         </>
                     )}  
-                </form>
-            </div>
-        </div>
+                </form> */}
+            {/* </div>
+        </div> */}
     </>
   )
 }

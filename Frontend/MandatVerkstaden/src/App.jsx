@@ -6,6 +6,7 @@ import LoginForm from "./components/forms/LoginForm";
 import ProtectedRoute from "./components/helpers/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import { RootRedirect } from "./components/helpers/RootRedirect";
+import Scenario from "./pages/Scenario";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/scenario" element={<Scenario />} />
           </Route>
         </Route>
       </Routes>

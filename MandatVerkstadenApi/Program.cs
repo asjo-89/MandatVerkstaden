@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Writes errors to file
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration
@@ -47,6 +49,8 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
 builder.Services.AddScoped<IMunicipalityService, MunicipalityService>();
+builder.Services.AddScoped<IPoliticalPartyRepository, PoliticalPartyRepository>();
+builder.Services.AddScoped<IPoliticalPartyService, PoliticalPartyService>();
 
 builder.Services.AddSingleton<ITokenService>(new TokenService(jwtKey, jwtIssuer, jwtAudience));
 
@@ -93,7 +97,12 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Services.AddAuthorization();
+// All controllers demand authorization
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+
 builder.Services.AddControllers();
 
 builder.Services.AddRateLimiter(options =>
@@ -108,6 +117,7 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
+// Global handler for exceptions
 app.UseExceptionHandler(errorApplication =>
     {
         errorApplication.Run(async context =>
