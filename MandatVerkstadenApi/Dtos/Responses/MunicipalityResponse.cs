@@ -4,7 +4,7 @@ public record MunicipalityResponse
     (
         int Id, 
         string ElectionAreaName, 
-        int TotalSeatCount,
+        //int TotalSeatCount,
         IReadOnlyList<ElectionConstituencyResponse> ElectionConstituencies
     );
 

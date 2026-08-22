@@ -5,7 +5,6 @@ public class Municipality
     public int Id { get; set; }
     public int MunicipalityCode { get; set; }
     public required string ElectionAreaName { get; set; }
-    public  int TotalSeatCount { get; set; }
 
 
 

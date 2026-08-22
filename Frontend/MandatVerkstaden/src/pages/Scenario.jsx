@@ -10,6 +10,7 @@ function Scenario() {
     const normalizeErrors = NormalizeErrors;
 
     const [municipalities, setMunicipalities] = useState([]);
+    const [allPoliticalParties, setAllPoliticalParties] = useState([]);
 
     const electionYears = [
         { id: 1, electionYear: "2026" },
@@ -21,18 +22,18 @@ function Scenario() {
     const [originalElectionResults, setOriginalElectionResults] = useState({
         municipalityId: '',
         electionYearId: '',
-        councilSeatCount: '',
+        totalCouncilSeatCount: '',
         isLocal: false,
-        politicalParties: [],
+        politicalParties: [{ id: "", name: "" }],
         electionResults: [],
-        newPoliticalParties: []
+        newPoliticalParties: {}
     });
 
     useEffect(() => {
         const fetchMunicipalities = async () => {
             try {
                 var data = await ApiFetch(
-                    `${API_URL}/municipality/get-all`,
+                    `${API_URL}/municipality/get-all-with-one-constituency`,
                     { method: "GET" },
                     true
                 );
@@ -47,17 +48,23 @@ function Scenario() {
             }
         };
 
-        const fetchParliamentaryParties = async () => {
+
+        const fetchAllPoliticalParties = async () => {
             try {
                 var data = await ApiFetch(
-                    `${API_URL}/politicalparty/get-all-parliamentary`,
+                    `${API_URL}/politicalparty/get-all`,
                     { method: "GET" },
                     true
                 );
-                setOriginalElectionResults(prevState => ({
-                    ...prevState,
-                    politicalParties: data
-                }));
+
+                if (data && data.length > 0) {
+                    const parliamentaryParties = data.filter(party => party.isParliamentary);
+                    setOriginalElectionResults(prev => ({
+                        ...prev,
+                        politicalParties: parliamentaryParties
+                    }));
+                }
+                setAllPoliticalParties(data);
             } catch (error) {
                 console.error(error);
                 if (error.errors) {
@@ -68,8 +75,9 @@ function Scenario() {
         };
 
         fetchMunicipalities();
-        fetchParliamentaryParties();
+        fetchAllPoliticalParties();
     }, []);
+
 
   return (
     <>
@@ -77,12 +85,14 @@ function Scenario() {
             <h2 className="manrope-extra-bold">Skapa ett scenario</h2>
             <p>För tillfället går det bara att skapa scenario för kommuner med en valkrets.</p>
 
-            {/* <AddScenarioForm municipalities={municipalities} formData={formData} setFormData={setFormData} /> */}
+            <div className="content">
             <AddElectionResultForm 
                 municipalities={municipalities} 
                 originalElectionResults={originalElectionResults} 
                 setOriginalElectionResults={setOriginalElectionResults} 
+                allPoliticalParties={allPoliticalParties}
                 electionYears={electionYears} />
+            </div>
 
 
             {/* <h2>Lägg till valresultat</h2>

@@ -23,10 +23,18 @@ public class MunicipalityController(IMunicipalityService service) : ControllerBa
         return response.Any() ? Ok(response) : NotFound(new { message = "Det finns inga kommuner att visa."});
     }
 
+    [HttpGet("get-all-with-one-constituency")]
+    public async Task<IActionResult> GetAllWithOneConstituency()
+    {
+        var list = await _service.GetAllWithOneConstituencyAsync();
+        var response = list.Select(DtoToResponse);
+        return response.Any() ? Ok(response) : NotFound(new { message = "Det finns inga kommuner att visa." });
+    }
+
     [HttpGet("get-all-include")]
-    public async Task<IActionResult> GetAllIncludeConstituency()
+    public async Task<IActionResult> GetAllIncludeConstituencies()
     { 
-        var list = await _service.GetAllIncludeConstituencyAsync();
+        var list = await _service.GetAllIncludeConstituenciesAsync();
         var response = list.Select(DtoToResponse);
         return response.Any()? Ok(response) : NotFound(new { message = "Det finns inga kommuner att visa."});
     }
@@ -60,7 +68,7 @@ public class MunicipalityController(IMunicipalityService service) : ControllerBa
             (
                 dto.Id,
                 dto.ElectionAreaName,
-                dto.TotalSeatCount,
+                //dto.TotalSeatCount,
                 constituencies
             );
         

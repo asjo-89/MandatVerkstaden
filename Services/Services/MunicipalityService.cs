@@ -28,9 +28,16 @@ public class MunicipalityService(IMunicipalityRepository repo) : IMunicipalitySe
         return municipalities.Select(EntityToDto).ToList();
     }
 
-    public async Task<IReadOnlyList<MunicipalityDto>> GetAllIncludeConstituencyAsync()
+    public async Task<IReadOnlyList<MunicipalityDto>> GetAllWithOneConstituencyAsync()
     {
-        var municipalities = await _repo.GetAllIncludeConstituencyAsync();
+        var municipalities = await _repo.GetAllWithOneConstituencyAsync();
+
+        return municipalities.Select(EntityToDto).ToList();
+    }
+
+    public async Task<IReadOnlyList<MunicipalityDto>> GetAllIncludeConstituenciesAsync()
+    {
+        var municipalities = await _repo.GetAllIncludeConstituenciesAsync();
 
         return municipalities.Select(EntityToDto).ToList();
     }       
@@ -42,7 +49,7 @@ public class MunicipalityService(IMunicipalityRepository repo) : IMunicipalitySe
         {
             Id = entity.Id,
             ElectionAreaName = entity.ElectionAreaName,
-            TotalSeatCount = entity.TotalSeatCount,
+            //TotalSeatCount = entity.TotalSeatCount,
             ElectionConstituencies = entity.ElectionConstituencies?
                 .Select(ec => new ElectionConstituencyDto
                 {

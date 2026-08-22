@@ -107,7 +107,8 @@ form {
     }
 }
 
-.input-group-small {
+.input-group-small,
+.small-width {
     flex: 1;
 }
 

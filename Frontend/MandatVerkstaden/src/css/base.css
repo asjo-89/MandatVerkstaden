@@ -98,6 +98,14 @@ a {
     }
 }
 
+.content {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 .alert-danger {
     color: var(--dark-red);
     font-size: 0.9rem;

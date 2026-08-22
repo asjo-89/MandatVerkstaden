@@ -19,7 +19,8 @@ export const Select = ({ htmlFor, label, value, onChange, defaultOptValue, optio
                     {options.map((option) => (
                         <option 
                             key={option.value} 
-                            value={option.value}>
+                            value={option.value}
+                            disabled={option.disabled || false}>
                                 {option.label}
                         </option>
                     ))}

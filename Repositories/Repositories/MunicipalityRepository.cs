@@ -24,7 +24,14 @@ public class MunicipalityRepository(AppDbContext context) : IMunicipalityReposit
         return await _context.Municipalities.ToListAsync();
     }
 
-    public async Task<IReadOnlyList<Municipality>> GetAllIncludeConstituencyAsync()
+    public async Task<IReadOnlyList<Municipality>> GetAllWithOneConstituencyAsync()
+    {
+        return await _context.Municipalities
+            .Where(m => !m.ElectionConstituencies.Any())
+            .ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<Municipality>> GetAllIncludeConstituenciesAsync()
     {
         return await _context.Municipalities.Include(m => m.ElectionConstituencies).ToListAsync();
     }

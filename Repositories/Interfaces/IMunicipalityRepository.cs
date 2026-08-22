@@ -6,5 +6,6 @@ public interface IMunicipalityRepository
 {
     Task<Municipality?> GetOneByIdAsync(int id);
     Task<IReadOnlyList<Municipality>> GetAllAsync();
-    Task<IReadOnlyList<Municipality>> GetAllIncludeConstituencyAsync();
+    Task<IReadOnlyList<Municipality>> GetAllIncludeConstituenciesAsync();
+    Task<IReadOnlyList<Municipality>> GetAllWithOneConstituencyAsync();
 }

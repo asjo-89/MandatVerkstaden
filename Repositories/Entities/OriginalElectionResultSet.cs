@@ -4,8 +4,7 @@ public class OriginalElectionResultSet
 {
     public int Id { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-
-
+    public int TotalCouncilSeatCount { get; set; }
 
 
     #region Navigation properties
