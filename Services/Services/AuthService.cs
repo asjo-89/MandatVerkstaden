@@ -5,11 +5,12 @@ using Services.Models.Auth;
 
 namespace Services.Services
 {
-    public class AuthService(IUserRepository users, IRefreshTokenRepository refreshTokens, ITokenService tokenService) : IAuthService
+    public class AuthService(IUserRepository users, IRefreshTokenRepository refreshTokens, ITokenService tokenService, IUnitOfWork context) : IAuthService
     {
         private readonly IUserRepository _users = users;
         private readonly IRefreshTokenRepository _refreshTokens = refreshTokens;
         private readonly ITokenService _tokenService = tokenService;
+        private readonly IUnitOfWork _context = context;
 
 
         public async Task<(bool Success, string? Error)> RegisterAsync(string username, string email, string firstName, string lastName, string password)
@@ -20,7 +21,7 @@ namespace Services.Services
             if (await _users.UserNameExistsAsync(username))
                 return (false, "Användarnamnet är upptaget.");
 
-            if(await _users.EmailExistsAsync(email))
+            if (await _users.EmailExistsAsync(email))
                 return (false, "Epostadressen är redan registrerad på ett konto.");
 
             var newUser = new User
@@ -33,7 +34,12 @@ namespace Services.Services
                 Role = "User"
             };
 
-            await _users.AddUserAsync(newUser);
+            var user = await _users.AddUserAsync(newUser);
+
+            if (user is null)
+                return (false, null);
+
+            await _context.SaveChangesAsync();
             return (true, null);
         }
         public async Task<(AuthResult? Result, AuthTokens? Tokens, string? Error)> LoginAsync(string username, string password)
@@ -52,7 +58,7 @@ namespace Services.Services
             var tokenHash = _tokenService.Hash(refreshTokenValue);
             var storedHash = await _refreshTokens.GetRefreshTokenByHashAsync(tokenHash);
 
-            if(storedHash is not null)
+            if (storedHash is not null)
             {
                 storedHash.RevokedAt = DateTime.UtcNow;
                 await _refreshTokens.SaveChangesAsync();
@@ -64,9 +70,9 @@ namespace Services.Services
             var tokenHash = _tokenService.Hash(refreshTokenValue);
             var storedHash = await _refreshTokens.GetRefreshTokenByHashAsync(tokenHash);
 
-            if(storedHash is null || !storedHash.IsActive)
+            if (storedHash is null || !storedHash.IsActive)
             {
-                if(storedHash is not null)
+                if (storedHash is not null)
                     await _refreshTokens.RevokeAllRefreshTokensForUserAsync(storedHash.UserId);
                 return (null, "Ogiltig eller utgången refresh-token.");
             }

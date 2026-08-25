@@ -54,7 +54,7 @@ form {
     width: 100%;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 1rem;
 }
@@ -68,7 +68,7 @@ form {
     gap: 1rem;
 }
 
-.added-parties-list {
+.selected-parties-list {
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -81,30 +81,18 @@ form {
     flex-wrap: wrap;
 }
 
-.added-party-item {
+.selected-party-item {
+    flex: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.1rem 0.3rem;
+    padding: 0.4rem;
     font-size: 0.9rem;
     border-radius: 0.5rem;
     background-color: var(--accent-light);
     box-shadow: inset 0px 0px 10px var(--accent-medium);
     border: 1px solid var(--accent);
-
-    & button {
-        background-color: transparent;
-        border: none;
-        color: var(--dark-red);
-        transition:all 0.2s ease-in-out;
-        padding: 0.2rem;
-
-        &:hover {
-            cursor: pointer;
-            color: var(--font-clr-primary);
-        }
-    }
 }
 
 .input-group-small,

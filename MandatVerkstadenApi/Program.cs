@@ -51,6 +51,9 @@ builder.Services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
 builder.Services.AddScoped<IMunicipalityService, MunicipalityService>();
 builder.Services.AddScoped<IPoliticalPartyRepository, PoliticalPartyRepository>();
 builder.Services.AddScoped<IPoliticalPartyService, PoliticalPartyService>();
+builder.Services.AddScoped<IElectionRepository, ElectionRepository>();
+builder.Services.AddScoped<IElectionService, ElectionService>();
+builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
 
 builder.Services.AddSingleton<ITokenService>(new TokenService(jwtKey, jwtIssuer, jwtAudience));
 

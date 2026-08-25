@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
+using Repositories.Interfaces;
 
 namespace Repositories.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : DbContext, IUnitOfWork
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -23,6 +24,8 @@ namespace Repositories.Data
         public DbSet<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; }
         public DbSet<User> Users { get; set; }
 
+
+        async Task IUnitOfWork.SaveChangesAsync() => await SaveChangesAsync();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

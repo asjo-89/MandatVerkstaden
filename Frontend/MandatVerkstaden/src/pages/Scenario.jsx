@@ -11,22 +11,15 @@ function Scenario() {
 
     const [municipalities, setMunicipalities] = useState([]);
     const [allPoliticalParties, setAllPoliticalParties] = useState([]);
-
-    const electionYears = [
-        { id: 1, electionYear: "2026" },
-        { id: 2, electionYear: "2022" },
-        { id: 3, electionYear: "2018" }
-    ];
+    const [electionYears, setElectionYears] = useState([]);
 
 
     const [originalElectionResults, setOriginalElectionResults] = useState({
         municipalityId: '',
         electionYearId: '',
         totalCouncilSeatCount: '',
-        isLocal: false,
-        politicalParties: [{ id: "", name: "" }],
-        electionResults: [],
-        newPoliticalParties: {}
+        politicalParties: [],
+        voteResults: [],
     });
 
     useEffect(() => {
@@ -48,7 +41,6 @@ function Scenario() {
             }
         };
 
-
         const fetchAllPoliticalParties = async () => {
             try {
                 var data = await ApiFetch(
@@ -61,10 +53,37 @@ function Scenario() {
                     const parliamentaryParties = data.filter(party => party.isParliamentary);
                     setOriginalElectionResults(prev => ({
                         ...prev,
-                        politicalParties: parliamentaryParties
+                        politicalParties: prev.politicalParties.length > 0
+                        ? prev.politicalParties
+                        : parliamentaryParties.map(party => ({
+                            id: party.id,
+                            name: party.name,
+                            isLocal: party.isLocal,
+                            isNew: false,
+                            municipalityId: party.municipalityId
+                        }))
                     }));
                 }
                 setAllPoliticalParties(data);
+
+            } catch (error) {
+                console.error(error);
+                if (error.errors) {
+                    const normalizedErrors = normalizeErrors(error.errors);
+                    console.log("Normalized errors:", normalizedErrors);
+                }
+            }
+        };
+
+        const fetchElectionYears = async () => {
+            try {
+                var data = await ApiFetch(
+                    `${API_URL}/election/get-all`,
+                    { method: "GET" },
+                    true
+                );                
+                setElectionYears(data);
+
             } catch (error) {
                 console.error(error);
                 if (error.errors) {
@@ -76,6 +95,7 @@ function Scenario() {
 
         fetchMunicipalities();
         fetchAllPoliticalParties();
+        fetchElectionYears();
     }, []);
 
 

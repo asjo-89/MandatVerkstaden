@@ -49,14 +49,13 @@ public class MunicipalityService(IMunicipalityRepository repo) : IMunicipalitySe
         {
             Id = entity.Id,
             ElectionAreaName = entity.ElectionAreaName,
-            //TotalSeatCount = entity.TotalSeatCount,
             ElectionConstituencies = entity.ElectionConstituencies?
                 .Select(ec => new ElectionConstituencyDto
-                {
-                    Id = ec.Id,
-                    Name = ec.Name,
-                    FixedSeatCount = ec.FixedSeatCount
-                }).ToList() ?? new List<ElectionConstituencyDto>()
+                (
+                    Id: ec.Id,
+                    Name: ec.Name,
+                    FixedSeatCount: ec.FixedSeatCount
+                )).ToList() ?? new List<ElectionConstituencyDto>()
 
         };
     }

@@ -16,7 +16,7 @@ export default function Menu() {
             <li><a href="#" className="nav-opt manrope-bold"><TbBuildingCommunity /> Kommuner</a></li>
             <li><a href="#" className="nav-opt manrope-bold"><TbUsersGroup /> Partier</a></li>
             <li><a href="#" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
-            <li><a href="#" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
+            <li><a href="/scenario" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
           </ul>
 
           {/* Desktop menu */}
@@ -25,7 +25,7 @@ export default function Menu() {
             <li><a href="#" className="nav-opt manrope-bold"><TbBuildingCommunity /> Kommuner</a></li>
             <li><a href="#" className="nav-opt manrope-bold"><TbUsersGroup /> Partier</a></li>
             <li><a href="#" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
-            <li><a href="#" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
+            <li><a href="/scenario" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
           </ul>
         </nav>
     </>

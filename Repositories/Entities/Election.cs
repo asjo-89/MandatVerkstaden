@@ -12,7 +12,6 @@ public class Election
 
 
     #region Navigation properties
-    public ICollection<Municipality> Municipalities { get; set; } = [];
     public ICollection<ElectionConstituency> ElectionConstituencies { get; set; } = [];
     public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; set; } = [];
     #endregion

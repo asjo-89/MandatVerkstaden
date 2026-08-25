@@ -1,0 +1,315 @@
+﻿MunicipalityId;Name;FixedSeatCount;ElectionId
+292;Ale;49;1
+293;Alingsås;51;1
+294;Alvesta;49;1
+295;Aneby;35;1
+296;Arboga;31;1
+297;Arjeplog;21;1
+298;Arvidsjaur;23;1
+299;Arvika;49;1
+300;Askersund;33;1
+301;Avesta;41;1
+302;Bengtsfors;31;1
+303;Berg;31;1
+304;Bjurholm;21;1
+305;Bjuv;31;1
+306;Boden;49;1
+307;Bollebygd;31;1
+308;Bollnäs;45;1
+309;Borgholm;35;1
+310;Borlänge;61;1
+311;Borås Östra 0;20;1
+311;Borås Södra 1;21;1
+311;Borås Västra 2;24;1
+312;Botkyrka;75;1
+313;Boxholm;29;1
+314;Bromölla;41;1
+315;Bräcke;27;1
+316;Burlöv;41;1
+317;Båstad;41;1
+318;Dals-Ed;31;1
+319;Danderyd;51;1
+320;Degerfors;31;1
+321;Dorotea;25;1
+322;Eda;35;1
+323;Ekerö;41;1
+324;Eksjö;49;1
+325;Emmaboda;41;1
+326;Enköping;51;1
+327;Eskilstuna;65;1
+328;Eslöv;51;1
+329;Essunga;31;1
+330;Fagersta;35;1
+331;Falkenberg;61;1
+332;Falköping;51;1
+333;Falun;61;1
+334;Filipstad;37;1
+335;Finspång;45;1
+336;Flen;39;1
+337;Forshaga;41;1
+338;Färgelanda;31;1
+339;Gagnef;35;1
+340;Gislaved;49;1
+341;Gnesta;31;1
+342;Gnosjö;35;1
+343;Gotland;71;1
+344;Grums;31;1
+345;Grästorp;31;1
+346;Gullspång;31;1
+347;Gällivare;35;1
+348;Gävle;65;1
+349;Göteborg;81;1
+350;Götene;41;1
+351;Habo;35;1
+352;Hagfors;35;1
+353;Hallsberg;45;1
+354;Hallstahammar;37;1
+355;Halmstad;71;1
+356;Hammarö;31;1
+357;Haninge Norra;27;1
+357;Haninge Södra;27;1
+358;Haparanda;31;1
+359;Heby;41;1
+360;Hedemora;35;1
+361;Helsingborg;65;1
+362;Herrljunga;31;1
+363;Hjo;33;1
+364;Hofors;31;1
+365;Huddinge;61;1
+366;Hudiksvall;51;1
+367;Hultsfred;45;1
+368;Hylte;41;1
+369;Håbo;41;1
+370;Hällefors;31;1
+371;Härjedalen;31;1
+372;Härnösand;43;1
+373;Härryda;51;1
+374;Hässleholm;61;1
+375;Höganäs;41;1
+376;Högsby;31;1
+377;Hörby;31;1
+378;Höör;41;1
+379;Jokkmokk;23;1
+380;Järfälla;61;1
+381;Jönköping;81;1
+382;Kalix;37;1
+383;Kalmar Norra;28;1
+383;Kalmar Södra;26;1
+384;Karlsborg;31;1
+385;Karlshamn;51;1
+386;Karlskoga;51;1
+387;Karlskrona Ö;23;1
+387;Karlskrona V;22;1
+387;Karlskrona C;22;1
+388;Karlstad;61;1
+389;Katrineholm;51;1
+390;Kil;41;1
+391;Kinda;35;1
+392;Kiruna;45;1
+393;Klippan;35;1
+394;Knivsta;31;1
+395;Kramfors;41;1
+396;Väster;27;1
+396;Öster;31;1
+397;Kristinehamn;41;1
+398;Krokom;41;1
+399;Kumla;45;1
+400;Kungsbacka;61;1
+401;Kungsör;31;1
+402;Kungälv;61;1
+403;Kävlinge;49;1
+404;Köping;49;1
+405;Laholm;41;1
+406;Landskrona;51;1
+407;Laxå;31;1
+408;Lekeberg;35;1
+409;Leksand;41;1
+410;Lerum;51;1
+411;Lessebo;35;1
+412;Lidingö;61;1
+413;Lidköping;51;1
+414;Lilla Edet;31;1
+415;Lindesberg;45;1
+416;Linköping Nordväst;23;1
+416;Linköping Sydväst;24;1
+416;Linköping Nordost;24;1
+417;Ljungby;49;1
+418;Ljusdal;41;1
+419;Ljusnarsberg;21;1
+420;Lomma;45;1
+421;Ludvika;45;1
+422;Luleå;61;1
+423;Lund;65;1
+424;Lycksele;31;1
+425;Lysekil;31;1
+426;Malmö Östra;28;1
+426;Malmö Västra;26;1
+427;Malung-Sälen;39;1
+428;Malå;25;1
+429;Mariestad;49;1
+430;Mark;51;1
+431;Markaryd;35;1
+432;Mellerud;31;1
+433;Mjölby;45;1
+434;Mora;41;1
+435;Motala;57;1
+436;Mullsjö;31;1
+437;Munkedal;35;1
+438;Munkfors;21;1
+439;Mölndal;61;1
+440;Mönsterås;49;1
+441;Mörbylånga;43;1
+442;Nacka Västra;28;1
+442;Nacka Östra;26;1
+443;Nora;35;1
+444;Norberg;31;1
+445;Nordanstig;31;1
+446;Nordmaling;31;1
+447;Norrköping;85;1
+448;Norrtälje;61;1
+449;Norsjö;27;1
+450;Nybro;41;1
+451;Nykvarn;31;1
+452;Nyköping;61;1
+453;Nynäshamn;41;1
+454;Nässjö;57;1
+455;Ockelbo;31;1
+456;Olofström;49;1
+457;Orsa;31;1
+458;Orust;41;1
+459;Osby;41;1
+460;Oskarshamn;49;1
+461;Ovanåker;35;1
+462;Oxelösund;31;1
+463;Pajala;21;1
+464;Partille;51;1
+465;Perstorp;27;1
+466;Piteå;51;1
+467;Ragunda;25;1
+468;Robertsfors;31;1
+469;Ronneby;49;1
+470;Rättvik;39;1
+471;Sala;45;1
+472;Salem;31;1
+473;Sandviken;51;1
+474;Sigtuna;61;1
+475;Simrishamn;41;1
+476;Sjöbo;41;1
+477;Skara;45;1
+478;Skellefteå;65;1
+479;Skinnskatteberg;25;1
+480;Skurup;41;1
+481;Skövde;61;1
+482;Smedjebacken;35;1
+483;Sollefteå;45;1
+484;Sollentuna;61;1
+485;Solna;61;1
+486;Sorsele;21;1
+487;Sotenäs;31;1
+488;Staffanstorp;41;1
+489;Stenungsund;51;1
+490;0 Södermalm-Enskede;16;1
+490;1 Bromma-Kungsholmen;15;1
+490;2 Norrmalm-Östermalm-Gamla Stan;15;1
+490;3 Östra Söderort;15;1
+490;4 Västra Söderort;15;1
+490;5 Yttre Västerort;14;1
+491;Storfors;27;1
+492;Storuman;31;1
+493;Strängnäs;55;1
+494;Strömstad;39;1
+495;Strömsund;35;1
+496;Sundbyberg;61;1
+497;Sundsvalls  Första;32;1
+497;Sundsvalls Andra;31;1
+498;Sunne;41;1
+499;Surahammar;31;1
+500;Svalöv;35;1
+501;Svedala;45;1
+502;Svenljunga;33;1
+503;Säffle;41;1
+504;Säter;35;1
+505;Sävsjö;39;1
+506;Söderhamn;49;1
+507;Söderköping;39;1
+508;Södertälje;65;1
+509;Sölvesborg;49;1
+510;Tanum;41;1
+511;Tibro;35;1
+512;Tidaholm;41;1
+513;Tierp;49;1
+514;Timrå;41;1
+515;Tingsryd;41;1
+516;Tjörn;41;1
+517;Tomelilla;41;1
+518;Torsby;31;1
+519;Torsås;35;1
+520;Tranemo;37;1
+521;Tranås;41;1
+522;Trelleborgs  Första, Västra;28;1
+522;Trelleborgs Andra, Östra;26;1
+523;Trollhättan Norra;28;1
+523;Trollhättan Södra;26;1
+524;Trosa;35;1
+525;Tyresö;51;1
+526;Täby Västra;25;1
+526;Täby Östra;29;1
+527;Töreboda;31;1
+528;Uddevalla;61;1
+529;Ulricehamn;49;1
+530;Umeå centrala;33;1
+530;Umeå omland;25;1
+531;Upplands Väsby;51;1
+532;Upplands-Bro;41;1
+533;Uppsala;81;1
+534;Uppvidinge;35;1
+535;Vadstena;35;1
+536;Vaggeryd;41;1
+537;Valdemarsvik;35;1
+538;Vallentuna;51;1
+539;Vansbro;31;1
+540;Vara;45;1
+541;Varbergs norra valkrets;26;1
+541;Varbergs södra valkrets;28;1
+542;Vaxholm;31;1
+543;Vellinge;51;1
+544;Vetlanda;45;1
+545;Vilhelmina;27;1
+546;Vimmerby;49;1
+547;Vindeln;31;1
+548;Vingåker;31;1
+549;Vårgårda;41;1
+550;Vänersborg;51;1
+551;Vännäs;31;1
+552;Värmdö;51;1
+553;Värnamo;51;1
+554;Västervik;57;1
+555;Västerås;61;1
+556;Växjö;61;1
+557;Ydre;21;1
+558;Ystad;51;1
+559;Åmål;35;1
+560;Ånge;35;1
+561;Åre;37;1
+562;Årjäng;35;1
+563;Åsele;25;1
+564;Åstorp;31;1
+565;Åtvidaberg;35;1
+566;Älmhult;41;1
+567;Älvdalen;35;1
+568;Älvkarleby;31;1
+569;Älvsbyn;31;1
+570;Ängelholm;51;1
+571;Öckerö;41;1
+572;Ödeshög;35;1
+573;Örebro Norra;29;1
+573;Örebro Södra;29;1
+574;Örkelljunga;37;1
+575;Örnsköldsviks Norra;25;1
+575;Örnsköldsviks Södra;29;1
+576;Östersund;61;1
+577;Österåker;51;1
+578;Östhammar;49;1
+579;Östra Göinge;31;1
+580;Överkalix;25;1
+581;Övertorneå;25;1

@@ -19,12 +19,12 @@ public class PoliticalPartyController(IPoliticalPartyService service) : Controll
     public async Task<IActionResult> Add(AddPoliticalPartyRequest request)
     {
         if(!ModelState.IsValid)
-            return ValidationProblem("Det saknas information från formuläret.");
+            return ValidationProblem("Det saknas information i formuläret.");
 
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (userIdClaim is null || !Guid.TryParse(userIdClaim, out var userId))
-            return Unauthorized("Du måste logga in för att kunna lägga till ett parti.");
+            return Unauthorized("Du måste logga in.");
 
         var dto = AddRequestToAddDto(request, userId);
 

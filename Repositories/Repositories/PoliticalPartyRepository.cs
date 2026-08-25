@@ -9,11 +9,10 @@ public class PoliticalPartyRepository(AppDbContext context) : IPoliticalPartyRep
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<PoliticalParty> AddAsync(PoliticalParty party)
+    public async Task<PoliticalParty> AddAsync(PoliticalParty entity)
     {
-        _context.Add(party);
-        await _context.SaveChangesAsync();
-        return party;
+        _context.Add(entity);
+        return entity;
     }
 
     public async Task<IReadOnlyList<PoliticalParty>> GetAllAsync()

@@ -7,9 +7,10 @@ using Services.Models;
 
 namespace Services.Services;
 
-public class PoliticalPartyService(IPoliticalPartyRepository repo) : IPoliticalPartyService
+public class PoliticalPartyService(IPoliticalPartyRepository repo, IUnitOfWork context) : IPoliticalPartyService
 {
     private readonly IPoliticalPartyRepository _repo = repo;
+    private readonly IUnitOfWork _context = context;
 
     public async Task<AddPoliticalPartyDto?> AddAsync(AddPoliticalPartyDto party)
     {
@@ -22,9 +23,11 @@ public class PoliticalPartyService(IPoliticalPartyRepository repo) : IPoliticalP
         {
             var entity = await _repo.AddAsync(newEntity);
 
-            return entity is null
-                ? null
-                : EntityToAddDto(entity);
+            if (entity is null)
+                return null;
+
+            await _context.SaveChangesAsync();
+            return EntityToAddDto(entity);
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -44,7 +47,7 @@ public class PoliticalPartyService(IPoliticalPartyRepository repo) : IPoliticalP
 
     public async Task<PoliticalPartyDto?> GetOneByIdAsync(int id)
     {
-        if(id <= 0)
+        if (id <= 0)
             throw new ArgumentException("Id must be a positive integer.", nameof(id));
 
         var party = await _repo.GetOneByIdAsync(id);
