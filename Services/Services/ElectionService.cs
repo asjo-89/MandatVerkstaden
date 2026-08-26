@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Repositories.Data;
+﻿using Microsoft.Identity.Client;
 using Repositories.Entities;
 using Repositories.Interfaces;
+using Services.Helpers;
 using Services.Interfaces;
 using Services.Models;
 
@@ -15,15 +15,20 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
     public async Task<OriginalElectionResultSetDto?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto)
     {
         if (dto is null)
-            throw new ArgumentNullException("The input parameter is null", nameof(dto));
+            throw new ArgumentNullException(nameof(dto), "The input parameter is null");
                
-        var entity = _repo.AddOriginalElectionResultAsync(DtoToEntity(dto));
-        await _context.SaveChangesAsync();
+        if(!dto.VoteResults.Any())
+            throw new ArgumentException("VoteResults cannot be an empty list.", nameof(dto.VoteResults));
+
+        dto.SeatAllocations = CouncilSeatAllocationCalculator.CalculateCouncilSeatAllocations(dto.VoteResults, dto.TotalCouncilSeatCount, 2);
+
+        var entity = await _repo.AddOriginalElectionResultAsync(DtoToEntity(dto));
 
         if (entity is null)
-            return null!;
+            return null;
+        await _context.SaveChangesAsync();
 
-        var seatAllocations = await _repo.GetOriginalElectionResultSetByIdAsync(entity.Result.Id);
+        var seatAllocations = await _repo.GetOriginalElectionResultSetByIdAsync(entity.Id);
 
         return seatAllocations is null
             ? null
@@ -58,6 +63,7 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
                 TotalSeatCountForPartyBeforeAllocation = a.TotalSeatCountForPartyBeforeAllocation,
                 ComparisonNumber = a.ComparisonNumber,
                 PoliticalPartyId = a.PoliticalPartyId,
+                WonByLotDrawing = a.WonByLotDrawing
             }).ToList()
         };
     }
@@ -82,6 +88,7 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
             {
                 Id = vote.Id,
                 NumberOfVotes = vote.NumberOfVotes,
+                PoliticalPartyId = vote.PoliticalPartyId,
                 PoliticalPartyName = vote.PoliticalParty?.Name ?? "",
                 ElectionConstituencyName = vote.ElectionConstituency?.Name ?? "",
             }).ToList(),

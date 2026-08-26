@@ -8,6 +8,7 @@ public class OriginalCouncilSeatAllocation
     public decimal ComparisonNumber { get; set; }
     public decimal AllocationDivisor { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public bool WonByLotDrawing { get; set; } = false;
 
 
 

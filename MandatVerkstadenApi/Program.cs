@@ -155,19 +155,18 @@ app.UseExceptionHandler(errorApplication =>
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/error");
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+if (!app.Environment.IsDevelopment())
+{
     app.UseHsts();
+    app.UseRateLimiter();
 }
 
 app.UseHttpsRedirection();
 app.UseCors(CorsPolicy);
-
-if(!app.Environment.IsDevelopment())
-{
-    app.UseRateLimiter();
-}
 
 app.UseAuthentication();
 app.UseAuthorization();

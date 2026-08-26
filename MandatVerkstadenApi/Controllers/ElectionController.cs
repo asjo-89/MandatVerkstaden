@@ -2,7 +2,6 @@
 using MandatVerkstadenApi.Dtos.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Entities;
 using Services.Interfaces;
 using Services.Models;
 using System.Security.Claims;
@@ -35,8 +34,6 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
 
         if (addedResult is null)
             return BadRequest("Något gick fel. Försök igen senare.");
-
-        // Calculate seat allocations
 
         return Ok(DtoToResponse(addedResult));
     }

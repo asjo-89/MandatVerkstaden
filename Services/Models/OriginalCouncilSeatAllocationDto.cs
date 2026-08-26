@@ -12,4 +12,5 @@ public record OriginalCouncilSeatAllocationDto
     public string PoliticalPartyName { get; init; } = string.Empty;
     public int PoliticalPartyId { get; init; }
     public int OriginalElectionResultSetId { get; init; }
+    public bool WonByLotDrawing { get; set; }
 }

@@ -13,6 +13,6 @@ public record OriginalElectionResultSetDto
     public MunicipalityDto? Municipality { get; init; }
     public ElectionDto? Election { get; init; }
     public IReadOnlyList<OriginalConstituencyVoteResultDto> VoteResults { get; init; } = [];
-    public IReadOnlyList<OriginalCouncilSeatAllocationDto> SeatAllocations { get; init; } = [];
+    public IEnumerable<OriginalCouncilSeatAllocationDto> SeatAllocations { get; set; } = [];
     public IReadOnlyList<PoliticalPartyDto>? PoliticalParties { get; init; } = [];
 }
