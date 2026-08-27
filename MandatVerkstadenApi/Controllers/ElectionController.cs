@@ -16,7 +16,7 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
     private readonly IElectionService _electionService = electionService;
     private readonly IPoliticalPartyService _politicalPartyService = politicalPartyService;
 
-    [HttpPost]
+    [HttpPost("add-election-result")]
     [Authorize]
     public async Task<IActionResult> AddOriginalElectionResult(AddOriginalElectionResultRequest request)
     {

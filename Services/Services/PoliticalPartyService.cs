@@ -97,6 +97,7 @@ public class PoliticalPartyService(IPoliticalPartyRepository repo, IUnitOfWork c
             Name = dto.Name,
             IsLocal = dto.IsLocal,
             IsParliamentary = dto.IsParliamentary,
+            UserId = dto.UserId,
             MunicipalityId = dto.MunicipalityId
         };
     }

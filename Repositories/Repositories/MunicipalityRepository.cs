@@ -24,10 +24,11 @@ public class MunicipalityRepository(AppDbContext context) : IMunicipalityReposit
         return await _context.Municipalities.ToListAsync();
     }
 
-    public async Task<IReadOnlyList<Municipality>> GetAllWithOneConstituencyAsync()
+    public async Task<IReadOnlyList<Municipality>> GetAllWithOneConstituencyAsync(int electionYearId)
     {
         return await _context.Municipalities
-            .Where(m => !m.ElectionConstituencies.Any())
+            .Include(m => m.ElectionConstituencies.Where(e => e.ElectionId == electionYearId))
+            .Where(m => m.ElectionConstituencies.Count(e => e.ElectionId == electionYearId) == 1)
             .ToListAsync();
     }
 

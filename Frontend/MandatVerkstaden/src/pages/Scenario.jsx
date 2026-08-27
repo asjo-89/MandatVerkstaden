@@ -9,7 +9,7 @@ function Scenario() {
 
     const normalizeErrors = NormalizeErrors;
 
-    const [municipalities, setMunicipalities] = useState([]);
+    // const [municipalities, setMunicipalities] = useState([]);
     const [allPoliticalParties, setAllPoliticalParties] = useState([]);
     const [electionYears, setElectionYears] = useState([]);
 
@@ -23,24 +23,6 @@ function Scenario() {
     });
 
     useEffect(() => {
-        const fetchMunicipalities = async () => {
-            try {
-                var data = await ApiFetch(
-                    `${API_URL}/municipality/get-all-with-one-constituency`,
-                    { method: "GET" },
-                    true
-                );
-                setMunicipalities(data);
-
-            } catch (error) {
-                console.error(error);
-                if (error.errors) {
-                    const normalizedErrors = normalizeErrors(error.errors);
-                    console.log("Normalized errors:", normalizedErrors);
-                }
-            }
-        };
-
         const fetchAllPoliticalParties = async () => {
             try {
                 var data = await ApiFetch(
@@ -93,7 +75,7 @@ function Scenario() {
             }
         };
 
-        fetchMunicipalities();
+        // fetchMunicipalities();
         fetchAllPoliticalParties();
         fetchElectionYears();
     }, []);
@@ -107,7 +89,7 @@ function Scenario() {
 
             <div className="content">
             <AddElectionResultForm 
-                municipalities={municipalities} 
+                // municipalities={municipalities} 
                 originalElectionResults={originalElectionResults} 
                 setOriginalElectionResults={setOriginalElectionResults} 
                 allPoliticalParties={allPoliticalParties}

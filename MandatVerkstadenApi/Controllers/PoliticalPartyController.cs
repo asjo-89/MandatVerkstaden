@@ -16,7 +16,7 @@ public class PoliticalPartyController(IPoliticalPartyService service) : Controll
 
 
     [HttpPost("add")]
-    public async Task<IActionResult> Add(AddPoliticalPartyRequest request)
+    public async Task<IActionResult> Add([FromBody]AddPoliticalPartyRequest request)
     {
         if(!ModelState.IsValid)
             return ValidationProblem("Det saknas information i formuläret.");

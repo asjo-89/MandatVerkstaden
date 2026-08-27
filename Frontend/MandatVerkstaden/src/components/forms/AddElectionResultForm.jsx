@@ -1,20 +1,26 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ConfirmButton } from '../buttons/ConfirmButton'
 import { Input } from '../inputs/Input'
 import { Select } from '../inputs/Select'
 import { DeleteButton } from '../buttons/DeleteButton'
 import { ApiFetch } from '../helpers/ApiFetch'
 import API_URL from '../../ApiUrl'
+import NormalizeErrors from '../helpers/NormalizeErrors'
 
 const AddElectionResultForm = ({ 
-        municipalities, 
+        // municipalities,
         originalElectionResults, 
         setOriginalElectionResults, 
         allPoliticalParties,
         electionYears
     }) => {
 
+const navigate = useNavigate();
+
 const [selectedPartyId, setSelectedPartyId] = useState('');
+const [electionYearChosen, setElectionYearChosen] = useState(false);
+const [municipalities, setMunicipalities] = useState([]);
 const selectedPartyIds = new Set(originalElectionResults.politicalParties.map(party => String(party.id)));
 
 const [newParty, setNewParty] = useState({
@@ -22,6 +28,63 @@ const [newParty, setNewParty] = useState({
     isLocal: "",
     municipalityId: ""
 });
+
+const handleElectionYearChange = (e) => {
+    const selectedYearId = e.target.value;
+    console.log("Selected election year ID:", selectedYearId);
+    if(selectedYearId === "") {
+        setElectionYearChosen(false);
+        setMunicipalities([]);
+        return;
+    }
+    setOriginalElectionResults(prev => ({
+        ...prev,
+        electionYearId: selectedYearId
+    }));
+    setElectionYearChosen(true);
+        const fetchMunicipalities = async () => {
+            try {
+                var data = await ApiFetch(
+                    `${API_URL}/municipality/get-all-with-one-constituency/${selectedYearId}`,
+                    { method: "GET" },
+                    true
+                );
+                setMunicipalities(data);
+                console.log("Fetched municipalities:", data);
+
+            } catch (error) {
+                console.error(error);
+                if (error.errors) {
+                    const normalizedErrors = NormalizeErrors(error.errors);
+                    console.log("Normalized errors:", normalizedErrors);
+                }
+            }
+        };
+        fetchMunicipalities();
+}
+
+const handleMunicipalityChange = (e) => {
+    const selectedMunicipalityId = e.target.value;
+    console.log("Selected municipality ID:", selectedMunicipalityId);
+    setOriginalElectionResults(prev => ({
+        ...prev,
+        municipalityId: selectedMunicipalityId
+    }));
+
+    const totalSeatCount = municipalities
+        .find(municipality => String(municipality.id) === String(selectedMunicipalityId))
+        ?.electionConstituencies?.[0]?.fixedSeatCount || 0;
+    console.log("Total council seat count for selected municipality:", totalSeatCount);
+    setOriginalElectionResults(prev => ({
+        ...prev,
+        totalCouncilSeatCount: Number(totalSeatCount)
+    }));
+    console.log("Updated originalElectionResults:", {
+        ...originalElectionResults,
+        municipalityId: selectedMunicipalityId,
+        totalCouncilSeatCount: Number(totalSeatCount)
+    });
+};
 
 const handleAddParty = () => {
     const partyToAdd = allPoliticalParties.find(party => 
@@ -48,7 +111,7 @@ const handleAddParty = () => {
 }
 
 const handleAddNewParty = async () => {
-    if(originalElectionResults.municipalityId === "" && newParty.isLocal === "true") {
+    if(originalElectionResults.municipalityId === "" && newParty.isLocal === true) {
         alert("Du måste välja en kommun innan du skapar ett nytt lokalt parti.");
         return;
     }
@@ -65,11 +128,16 @@ const handleAddNewParty = async () => {
         return;
     }
 
-    await ApiFetch(
+    const partyToSend = {
+        ...newParty,
+        municipalityId: newParty.isLocal === true ? originalElectionResults.municipalityId : null
+    };
+
+    const createdParty = await ApiFetch(
         `${API_URL}/politicalparty/add`,
         {
             method: "POST",
-            body: originalElectionResults
+            body: partyToSend
         },
         true
     );
@@ -77,11 +145,12 @@ const handleAddNewParty = async () => {
         ...prev,
         politicalParties: [...prev.politicalParties,
             {
-                id: newParty.id,
-                name: newParty.name
+                id: createdParty.id,
+                name: createdParty.name
             }
         ]
     }));
+    setNewParty({ name: "", isLocal: "", municipalityId: "" });
 }
 
 const handleDeleteParty = (partyId) => {
@@ -93,23 +162,63 @@ const handleDeleteParty = (partyId) => {
 
 const handleVoteResultChange = (partyId) => (e) => {
     const newVoteResult = e.target.value;
+
+    const constituencyId = municipalities
+        .find(m => String(m.id) === String(originalElectionResults.municipalityId))?.electionConstituencies?.[0]?.id;
+
+    if(constituencyId === undefined) {
+        alert("Kunde inte hitta valkretsen för den valda kommunen.");
+        return;
+    }
+
     setOriginalElectionResults(prev => {
-        const exists = prev.voteResults.some(vote => vote.partyId === partyId);
+        const exists = prev.voteResults.some(vote => vote.politicalPartyId === partyId);
         const voteResults = exists
             ? prev.voteResults.map(vote => 
-                vote.partyId === partyId 
-                    ? {...vote, numberOfVotes: newVoteResult}
+                vote.politicalPartyId === partyId 
+                    ? {...vote, numberOfVotes: newVoteResult, electionConstituencyId: constituencyId}
                     : vote)
-            : [...prev.voteResults, { partyId, numberOfVotes: newVoteResult }]
+            : [...prev.voteResults, { politicalPartyId: partyId, numberOfVotes: newVoteResult, electionConstituencyId: constituencyId }]
         ;
         return { ...prev, voteResults };
     });
 }
 
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!originalElectionResults.municipalityId || !originalElectionResults.electionYearId) {
+        alert("Vänligen välj kommun och valår.");
+        return;
+    }
+
+    if(originalElectionResults.politicalParties.length === 0) {
+        alert("Vänligen lägg till minst ett parti.");
+        return;
+    }
+
+    if(originalElectionResults.voteResults.length !== originalElectionResults.politicalParties.length) {
+        alert("Vänligen ange röster för alla valda partier.");
+        return;
+    }
     
+    const data = await ApiFetch(
+        `${API_URL}/election/add-election-result`,
+        {
+            method: "POST",
+            body: originalElectionResults
+        },
+        true
+    );
+
+    if (data.error) {
+        alert("Ett fel inträffade vid sparandet av valresultatet.");
+        return;
+    }
+    alert("Valresultatet har sparats.");
+    setTimeout(() => {
+        navigate(`/dashboard`);
+    }, 1000);
 }
 
   return (
@@ -118,31 +227,13 @@ const handleSubmit = (e) => {
             <form className="form-container" id="election-result-form" onSubmit={handleSubmit}>
                 <div className="row-group">
                     <Select
-                        id="electionAreaName"
-                        name="electionAreaName"
-                        htmlFor="electionAreaName"
-                        label="Välj kommun"
-                        width="input-group-medium"
-                        value={originalElectionResults.municipalityId}
-                        onChange={(e) => setOriginalElectionResults(prev => ({ 
-                            ...prev, municipalityId: e.target.value }))}
-                        defaultOptValue="Välj kommun"
-                        options={municipalities.map((municipality) => ({
-                            value: municipality.id,
-                            label: municipality.electionAreaName
-                        }))} 
-                    />
-                    <Select
                         id="electionYear"
                         name="electionYear"
                         htmlFor="electionYear"
                         label="Välj valår"
                         width="input-group-small"
                         value={originalElectionResults.electionYearId}
-                        onChange={(e) => setOriginalElectionResults(prev => ({
-                            ...prev,
-                            electionYearId: e.target.value
-                        }))}
+                        onChange={handleElectionYearChange}
                         defaultOptValue="Välj valår"
                         options={electionYears.map((year) => {
                             return {
@@ -151,127 +242,138 @@ const handleSubmit = (e) => {
                             }
                         })}
                     />
-                    <Input
-                        id="totalCouncilSeatCount"
-                        name="totalCouncilSeatCount"
-                        htmlFor="totalCouncilSeatCount"
-                        type="number"
-                        label="Mandat"
-                        width="input-group-small"
-                        placeholder="Ex. 31"
-                        value={originalElectionResults.totalCouncilSeatCount}
-                        onChange={(e) => 
-                            setOriginalElectionResults(prev => ({ ...prev, totalCouncilSeatCount: e.target.value }))}
-                    />
+                    {electionYearChosen && (
+                        <Select
+                            id="electionAreaName"
+                            name="electionAreaName"
+                            htmlFor="electionAreaName"
+                            label="Välj kommun"
+                            width="input-group-medium"
+                            value={originalElectionResults.municipalityId}
+                            onChange={handleMunicipalityChange}
+                            defaultOptValue="Välj kommun"
+                            options={municipalities.map((municipality) => ({
+                                value: municipality.id,
+                                label: municipality.electionAreaName
+                            }))} 
+                        />
+                    )}
                 </div>
-                <div className="input-group input-group-small row-group">
-                    <Select
-                        id="addPoliticalParty"
-                        name="addPoliticalParty"
-                        htmlFor="addPoliticalParty"
-                        label="Lägg till fler partier"
-                        value={selectedPartyId}
-                        onChange={(e) => {
-                            setSelectedPartyId(e.target.value)}}
-                        defaultOptValue="Välj parti"
-                        options={allPoliticalParties.map((party) => {
-                            return {
-                                value: party.id,
-                                label: party.name,
-                                disabled: selectedPartyIds.has(String(party.id))
+                {electionYearChosen && originalElectionResults.municipalityId && (
+                <>
+                    <div className="input-group input-group-small row-group">
+                        <Select
+                            id="addPoliticalParty"
+                            name="addPoliticalParty"
+                            htmlFor="addPoliticalParty"
+                            label="Lägg till fler partier"
+                            value={selectedPartyId}
+                            onChange={(e) => {
+                                setSelectedPartyId(e.target.value)}}
+                            defaultOptValue="Välj parti"
+                            options={allPoliticalParties.map((party) => {
+                                return {
+                                    value: party.id,
+                                    label: party.name,
+                                    disabled: selectedPartyIds.has(String(party.id))
+                                }
+                            })
                             }
-                        })
+                        />
+                        <ConfirmButton 
+                            btnType="button" 
+                            className="btn-primary" 
+                            btnText="+"
+                            onClick={handleAddParty} />
+                    </div>
+                    <div className="selected-parties-container small-width">
+                        <h3 className="manrope-extra-bold">Valresultat</h3>
+                        <table className="selected-parties-table">
+                            <thead>
+                                <tr>
+                                    <th>Parti</th>
+                                    <th>Röster</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {originalElectionResults.politicalParties.map(party => (
+                                    <tr key={party.id}>
+                                        <td>{party.name}</td>
+                                        <td>
+                                            <Input
+                                                id={`voteResult-${party.id}`}
+                                                name={`voteResult-${party.id}`}
+                                                htmlFor={`voteResult-${party.id}`}
+                                                type="number"
+                                                min="0"
+                                                placeholder="0"
+                                                value={originalElectionResults.voteResults.find(vote => vote.politicalPartyId === party.id)?.numberOfVotes ?? ""}
+                                                onChange={handleVoteResultChange(party.id)}
+                                                onWheel={(e) => e.target.blur()}
+                                            />
+                                        </td>  
+                                        <td>
+                                            <DeleteButton 
+                                                btnText="X" 
+                                                className="btn-small manrope-bold"
+                                                onClick={() => handleDeleteParty(party.id)} 
+                                            />
+                                        </td> 
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <p>Totalt antal röster: 
+                            {originalElectionResults.voteResults.reduce((total, vote) => total + Number(vote.numberOfVotes || 0), 0)}
+                        </p>
+                    </div>
+                </>
+                )}
+            </form>
+            {electionYearChosen && originalElectionResults.municipalityId && (
+            <>
+                {/* Outside the form so these fields are never part of the scenario submission */}
+                <p>Saknar du ditt parti? Lägg till det här:</p>
+                <div className="row-group">
+                    <Input 
+                        id="newPartyName" 
+                        name="newPartyName" 
+                        htmlFor="newPartyName"
+                        label="Partinamn"
+                        type="text" 
+                        placeholder="Ex. Parti 1" 
+                        value={newParty.name}
+                        onChange={(e) => setNewParty(prev => ({ ...prev, name: e.target.value }))}
+                    />
+                    <Select 
+                        id="isLocal" 
+                        htmlFor="isLocal"
+                        name="isLocal" 
+                        label="Är det ett lokalt parti?"
+                        value={newParty.isLocal === undefined
+                            ? ""
+                            : newParty.isLocal
                         }
+                        onChange={(e) => setNewParty(prev => ({ ...prev, isLocal: e.target.value === "true"}))}
+                        options={[
+                            { value: true, label: "Ja" },
+                            { value: false, label: "Nej" }
+                        ]}
                     />
                     <ConfirmButton 
                         btnType="button" 
                         className="btn-primary" 
                         btnText="+"
-                        onClick={handleAddParty} />
+                        onClick={handleAddNewParty} />
                 </div>
-            </form>
-
-            {/* Outside the form so these fields are never part of the scenario submission */}
-            <p>Saknar du ditt parti? Lägg till det här:</p>
-            <div className="row-group">
-                <Input 
-                    id="newPartyName" 
-                    name="newPartyName" 
-                    htmlFor="newPartyName"
-                    label="Partinamn"
-                    type="text" 
-                    placeholder="Ex. Parti 1" 
-                    value={newParty.name}
-                    onChange={(e) => setNewParty(prev => ({ ...prev, name: e.target.value }))}
-                />
-                <Select 
-                    id="isLocal" 
-                    htmlFor="isLocal"
-                    name="isLocal" 
-                    label="Är det ett lokalt parti?"
-                    value={newParty.isLocal === undefined
-                        ? ""
-                        : String(newParty.isLocal)
-                    }
-                    onChange={(e) => setNewParty(prev => ({ ...prev, isLocal: e.target.value}))}
-                    options={[
-                        { value: "true", label: "Ja" },
-                        { value: "false", label: "Nej" }
-                    ]}
-                />
                 <ConfirmButton 
-                    btnType="button" 
+                    btnType="submit" 
+                    form="election-result-form"
                     className="btn-primary" 
-                    btnText="+"
-                    onClick={handleAddNewParty} />
-            </div>
-            <ConfirmButton 
-                btnType="submit" 
-                form="election-result-form"
-                className="btn-primary" 
-                btnText="Skapa scenario" />
-        </div>
-
-        <div className="selected-parties-container small-width">
-            <h3 className="manrope-extra-bold">Valda partier</h3>
-            <div className="selected-parties-list">
-                {originalElectionResults.politicalParties.map(party => (
-                    <div className="row-group selected-party-item" key={party.id}>
-                        <p className="manrope-semibold">{party.name}</p>
-                        <DeleteButton 
-                            btnText="X" 
-                            className="btn-small manrope-bold" 
-                            onClick={() => handleDeleteParty(party.id)} />
-                    </div>
-                ))}
-            </div>
-            <table className="selected-parties-table">
-                <thead>
-                    <tr>
-                        <th>Parti</th>
-                        <th>Röster</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {originalElectionResults.politicalParties.map(party => (
-                        <tr key={party.id}>
-                            <td>{party.name}</td>
-                            <td>
-                                <Input
-                                    id={`voteResult-${party.id}`}
-                                    name={`voteResult-${party.id}`}
-                                    htmlFor={`voteResult-${party.id}`}
-                                    type="number"
-                                    placeholder="0"
-                                    value={party.voteResult || ""}
-                                    onChange={handleVoteResultChange(party.id)}
-                                />
-                            </td>   
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                    btnText="Skapa scenario" />
+            </>
+            )}
         </div>
     </>
   )

@@ -1,4 +1,4 @@
-export const Input = ({ id, name, htmlFor, label, placeholder, type, onChange, statusClass, value, width }) => {
+export const Input = ({ id, name, htmlFor, label, placeholder, type, onChange, statusClass, value, width, onWheel }) => {
   return (
         <>
             <div className={`input-group ${width}`}>
@@ -13,6 +13,7 @@ export const Input = ({ id, name, htmlFor, label, placeholder, type, onChange, s
                     id={id} 
                     name={name} 
                     onChange={onChange} 
+                    onWheel={onWheel}
                     placeholder={placeholder} 
                     value={value} />
             </div>

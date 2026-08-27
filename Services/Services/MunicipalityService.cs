@@ -28,9 +28,9 @@ public class MunicipalityService(IMunicipalityRepository repo) : IMunicipalitySe
         return municipalities.Select(EntityToDto).ToList();
     }
 
-    public async Task<IReadOnlyList<MunicipalityDto>> GetAllWithOneConstituencyAsync()
+    public async Task<IReadOnlyList<MunicipalityDto>> GetAllWithOneConstituencyAsync(int electionYearId)
     {
-        var municipalities = await _repo.GetAllWithOneConstituencyAsync();
+        var municipalities = await _repo.GetAllWithOneConstituencyAsync(electionYearId);
 
         return municipalities.Select(EntityToDto).ToList();
     }

@@ -23,10 +23,10 @@ public class MunicipalityController(IMunicipalityService service) : ControllerBa
         return response.Any() ? Ok(response) : NotFound(new { message = "Det finns inga kommuner att visa."});
     }
 
-    [HttpGet("get-all-with-one-constituency")]
-    public async Task<IActionResult> GetAllWithOneConstituency()
+    [HttpGet("get-all-with-one-constituency/{electionYearId}")]
+    public async Task<IActionResult> GetAllWithOneConstituency(int electionYearId)
     {
-        var list = await _service.GetAllWithOneConstituencyAsync();
+        var list = await _service.GetAllWithOneConstituencyAsync(electionYearId);
         var response = list.Select(DtoToResponse);
         return response.Any() ? Ok(response) : NotFound(new { message = "Det finns inga kommuner att visa." });
     }
@@ -68,7 +68,6 @@ public class MunicipalityController(IMunicipalityService service) : ControllerBa
             (
                 dto.Id,
                 dto.ElectionAreaName,
-                //dto.TotalSeatCount,
                 constituencies
             );
         

@@ -15,6 +15,12 @@ public class ElectionRepository(AppDbContext context) : IElectionRepository
         return Task.FromResult(entity);
     }
 
+    public async Task<bool> ValidateElectionConstituencyIdInElectionResult(int constituencyId, int electionId, int municipalityId)
+    {
+        return await _context.ElectionConstituencies
+            .AnyAsync(ec => ec.Id == constituencyId && ec.ElectionId == electionId && ec.MunicipalityId == municipalityId);
+    }
+
     public async Task<IReadOnlyList<Election>> GetAllYearsAsync()
     {
         return await _context.Elections.OrderByDescending(e => e.ElectionYear).ToListAsync();
