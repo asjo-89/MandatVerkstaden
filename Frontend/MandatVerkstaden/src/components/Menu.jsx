@@ -7,6 +7,7 @@ export default function Menu() {
   return (
     <>
         <nav className="navigation">
+          <div>
           <h1><a href="#" className="logo-text manrope-extra-bold">Val<span>Kvoten</span></a></h1>
           
           {/* Mobile and tablet menu */}
@@ -24,9 +25,10 @@ export default function Menu() {
             <li><a href="#" className="nav-opt manrope-bold"><AiOutlineDashboard /> Översikt</a></li>
             <li><a href="#" className="nav-opt manrope-bold"><TbBuildingCommunity /> Kommuner</a></li>
             <li><a href="#" className="nav-opt manrope-bold"><TbUsersGroup /> Partier</a></li>
-            <li><a href="#" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
+            <li><a href="/electionResults" className="nav-opt manrope-bold"><TbChartBar  /> Valresultat</a></li>
             <li><a href="/scenario" className="nav-opt manrope-bold"><GrDocumentTest /> Scenarier</a></li>
           </ul>
+          </div>
         </nav>
     </>
   )

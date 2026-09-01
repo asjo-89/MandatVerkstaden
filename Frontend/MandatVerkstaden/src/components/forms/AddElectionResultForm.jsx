@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { ConfirmButton } from '../buttons/ConfirmButton'
 import { Input } from '../inputs/Input'
 import { Select } from '../inputs/Select'
@@ -9,14 +8,12 @@ import API_URL from '../../ApiUrl'
 import NormalizeErrors from '../helpers/NormalizeErrors'
 
 const AddElectionResultForm = ({ 
-        // municipalities,
         originalElectionResults, 
         setOriginalElectionResults, 
         allPoliticalParties,
-        electionYears
+        electionYears,
+        setAllocatedResults
     }) => {
-
-const navigate = useNavigate();
 
 const [selectedPartyId, setSelectedPartyId] = useState('');
 const [electionYearChosen, setElectionYearChosen] = useState(false);
@@ -74,16 +71,11 @@ const handleMunicipalityChange = (e) => {
     const totalSeatCount = municipalities
         .find(municipality => String(municipality.id) === String(selectedMunicipalityId))
         ?.electionConstituencies?.[0]?.fixedSeatCount || 0;
-    console.log("Total council seat count for selected municipality:", totalSeatCount);
+
     setOriginalElectionResults(prev => ({
         ...prev,
         totalCouncilSeatCount: Number(totalSeatCount)
     }));
-    console.log("Updated originalElectionResults:", {
-        ...originalElectionResults,
-        municipalityId: selectedMunicipalityId,
-        totalCouncilSeatCount: Number(totalSeatCount)
-    });
 };
 
 const handleAddParty = () => {
@@ -216,9 +208,8 @@ const handleSubmit = async (e) => {
         return;
     }
     alert("Valresultatet har sparats.");
-    setTimeout(() => {
-        navigate(`/dashboard`);
-    }, 1000);
+    console.log("Received allocation results:", data);
+    setAllocatedResults(data);
 }
 
   return (

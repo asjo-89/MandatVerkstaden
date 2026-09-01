@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -134,6 +135,8 @@ app.UseExceptionHandler(errorApplication =>
                 NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                 ConflictException => (StatusCodes.Status409Conflict, exception.Message),
                 BusinessRulesException => (StatusCodes.Status400BadRequest, exception.Message),
+                DbUpdateException { InnerException: SqlException { Number: 2601 or 2627 } }
+                    => (StatusCodes.Status409Conflict, "Det finns redan ett resultat med den kommunen och samma valår."),
                 _ => (StatusCodes.Status500InternalServerError, "Ett oväntat fel inträffade.")
             };
 

@@ -1,3 +1,7 @@
+:root {    
+    --nav-width: clamp(20vw, 250px, 320px);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -31,8 +35,9 @@ header {
     justify-content: center;
     background-color: var(--primary-dark);
 
+    /* reserves space so fixed .navigation doesn't overlap main content */
     @media (min-width: 1024px) {        
-        flex: 0 0 250px;
+        flex: 0 0 var(--nav-width);
     }
 }
 

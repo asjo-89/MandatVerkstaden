@@ -35,7 +35,21 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
         if (addedResult is null)
             return BadRequest("Något gick fel. Försök igen senare.");
 
-        return Ok(DtoToResponse(addedResult));
+        var responseList = addedResult
+            .Select(result => new OriginalResultsWithSeatAllocationsResponse(
+                SeatAllocationId: result.SeatAllocationId,
+                OriginalSetId: result.OriginalSetId,
+                PoliticalPartyId: result.PoliticalPartyId,
+                PoliticalPartyName: result.PoliticalPartyName,
+                AllocatedSeat: result.AllocatedSeat,
+                AllocationDivisor: result.AllocationDivisor,
+                ComparisonNumber: result.ComparisonNumber,
+                TotalCouncilSeatCountForParty: result.TotalCouncilSeatCountForParty,
+                WonByLotDrawing: result.WonByLotDrawing,
+                NumberOfVotes: result.NumberOfVotes
+                )).ToList();
+
+        return Ok(responseList);
     }
 
 
@@ -48,6 +62,38 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
             : NotFound(new { message = "Inga valår hittades." });
     }
 
+
+    [HttpGet("get-original-results-with-seat-allocations")]
+    public async Task<IActionResult> GetAllResultsWithSeatAllocations(int resultId)
+    {
+        if (resultId <= 0)
+            return ValidationProblem("Id för resultat saknas. Försök igen.");
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim is null || !Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized("Du måste logga in.");
+
+        var resultList = await _electionService.GetOriginalResultsWithSeatAllocationsByIdAsync(resultId, userId);
+
+        var responseList = resultList
+            .Select(result => new OriginalResultsWithSeatAllocationsResponse(
+                SeatAllocationId: result.SeatAllocationId,
+                OriginalSetId: result.OriginalSetId,
+                PoliticalPartyId: result.PoliticalPartyId,
+                PoliticalPartyName: result.PoliticalPartyName,
+                AllocatedSeat: result.AllocatedSeat,
+                AllocationDivisor: result.AllocationDivisor,
+                ComparisonNumber: result.ComparisonNumber,
+                TotalCouncilSeatCountForParty: result.TotalCouncilSeatCountForParty,
+                WonByLotDrawing: result.WonByLotDrawing,
+                NumberOfVotes: result.NumberOfVotes
+                )).ToList();
+
+        return responseList.Any()
+            ? Ok(responseList)
+            : NotFound("Kunde inte hitta valresultatet.");
+    }
 
 
 
@@ -106,13 +152,14 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
                     (
                         Id: sa.Id ?? 0,
                         AllocatedSeats: sa.AllocatedSeat,
-                        TotalSeatCountForPartyBeforeAllocation: sa.TotalSeatCountForPartyBeforeAllocation,
+                        TotalSeatCountForPartyBeforeAllocation: sa.TotalCouncilSeatCountForParty,
                         ComparisonNumber: sa.ComparisonNumber,
                         AllocationDivisor: sa.AllocationDivisor,
                         PoliticalPartyName: sa.PoliticalPartyName ?? ""
 
                     )
-                ).ToList()
+                ).ToList(),
+            ResultsWithSeats: []
         );
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using Repositories.Entities;
+﻿using Repositories.Entities;
 using Repositories.Interfaces;
 using Services.Helpers;
 using Services.Interfaces;
@@ -12,13 +11,18 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
     private readonly IElectionRepository _repo = repo;
     private readonly IUnitOfWork _context = context;
 
-    public async Task<OriginalElectionResultSetDto?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto)
+    public async Task<IReadOnlyList<OriginalResultsWithSeatAllocations>?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto)
     {
         if (dto is null)
             throw new ArgumentNullException(nameof(dto), "The input parameter is null");
                
         if(!dto.VoteResults.Any())
             throw new ArgumentException("VoteResults cannot be an empty list.", nameof(dto.VoteResults));
+
+        var alreadyExists = await _repo.OriginalElectionResultExistsAsync(dto.UserId, dto.MunicipalityId, dto.ElectionYearId);
+
+        if (alreadyExists)
+            throw new InvalidOperationException("An OriginalElectionResultSet already exists with the same user id, municipality id and election year id.");
 
         var constituencyIds = dto.VoteResults.Select(vr => vr.ElectionConstituencyId).Distinct().ToList();
 
@@ -35,13 +39,33 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
 
         if (entity is null)
             return null;
+
         await _context.SaveChangesAsync();
 
-        var seatAllocations = await _repo.GetOriginalElectionResultSetByIdAsync(entity.Id);
+        var results = await _repo.GetOriginalResultsWithSeatAllocationsByIdAsync(entity.Id, entity.UserId);
 
-        return seatAllocations is null
+        var allocationsList = results
+            .Where(result => result is not null)
+            .SelectMany(result => result!.OriginalCouncilSeatAllocations)
+            .Select(x => new OriginalResultsWithSeatAllocations
+                (
+                    SeatAllocationId: x.Id,
+                    OriginalSetId: x.OriginalElectionResultSetId,
+                    PoliticalPartyId: x.PoliticalPartyId,
+                    PoliticalPartyName: x.PoliticalParty.Name,
+                    NumberOfVotes: x.OriginalElectionResultSet.OriginalConstituencyVoteResults
+                        .Where(a => a.PoliticalPartyId == x.PoliticalPartyId)
+                        .Sum(a => a.NumberOfVotes),
+                    AllocatedSeat: x.AllocatedSeat,
+                    ComparisonNumber: Math.Round(x.ComparisonNumber, 4),
+                    AllocationDivisor: x.AllocationDivisor,
+                    TotalCouncilSeatCountForParty: x.TotalCouncilSeatCountForParty,
+                    WonByLotDrawing: x.WonByLotDrawing
+                )).ToList();
+
+        return allocationsList is null
             ? null
-            : EntityToDto(seatAllocations);
+            : allocationsList;
     }
 
     public async Task<IReadOnlyList<ElectionDto>> GetAllYearsAsync()
@@ -49,6 +73,35 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         var years = await _repo.GetAllYearsAsync();
         return years.Select(e => new ElectionDto(Id: e.Id, ElectionYear: e.ElectionYear)).ToList();
     }
+
+    public async Task<IReadOnlyList<OriginalResultsWithSeatAllocations>> GetOriginalResultsWithSeatAllocationsByIdAsync(int id, Guid userId)
+    {
+        if (id <= 0)
+            throw new ArgumentException(nameof(id), "Input parameter id is invalid.");
+
+        var results = await _repo.GetOriginalResultsWithSeatAllocationsByIdAsync(id, userId);
+
+        var dtoList = results
+            .Where(result => result is not null)
+            .SelectMany(result => result!.OriginalCouncilSeatAllocations)
+            .Select(x => new OriginalResultsWithSeatAllocations
+                (
+                    SeatAllocationId: x.Id,
+                    OriginalSetId: x.OriginalElectionResultSetId,
+                    PoliticalPartyId: x.PoliticalPartyId,
+                    PoliticalPartyName: x.PoliticalParty.Name,
+                    NumberOfVotes: x.OriginalElectionResultSet.OriginalConstituencyVoteResults
+                        .Where(a => a.PoliticalPartyId == x.PoliticalPartyId)
+                        .Sum(a => a.NumberOfVotes),
+                    AllocatedSeat: x.AllocatedSeat,
+                    ComparisonNumber: Math.Round(x.ComparisonNumber, 4),
+                    AllocationDivisor: x.AllocationDivisor,
+                    TotalCouncilSeatCountForParty: x.TotalCouncilSeatCountForParty,
+                    WonByLotDrawing: x.WonByLotDrawing
+                )).ToList();
+        return dtoList ?? [];
+    }
+
 
 
     private static OriginalElectionResultSet DtoToEntity(OriginalElectionResultSetDto dto)
@@ -69,7 +122,7 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
             {
                 AllocatedSeat = a.AllocatedSeat,
                 AllocationDivisor = a.AllocationDivisor,
-                TotalSeatCountForPartyBeforeAllocation = a.TotalSeatCountForPartyBeforeAllocation,
+                TotalCouncilSeatCountForParty = a.TotalCouncilSeatCountForParty,
                 ComparisonNumber = a.ComparisonNumber,
                 PoliticalPartyId = a.PoliticalPartyId,
                 WonByLotDrawing = a.WonByLotDrawing
@@ -105,7 +158,7 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
             {
                 Id = a.Id,
                 AllocatedSeat = a.AllocatedSeat,
-                TotalSeatCountForPartyBeforeAllocation = a.TotalSeatCountForPartyBeforeAllocation,
+                TotalCouncilSeatCountForParty = a.TotalCouncilSeatCountForParty,
                 ComparisonNumber = a.ComparisonNumber,
                 AllocationDivisor = a.AllocationDivisor,
                 PoliticalPartyName = a.PoliticalParty?.Name ?? "",
@@ -113,3 +166,4 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         };
     }
 }
+

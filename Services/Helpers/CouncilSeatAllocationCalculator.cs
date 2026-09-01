@@ -37,12 +37,12 @@ internal static class CouncilSeatAllocationCalculator
 
         var partyAllocations = new List<OriginalCouncilSeatAllocationDto>();
         var partyDivisors = new Dictionary<int, decimal>();
-        var seatsBeforeAllocation = new Dictionary<int, int>();
+        var totalSeatsAfterAllocation = new Dictionary<int, int>();
 
         foreach(var partyVote in partiesAboveThreshold)
         {
             partyDivisors.Add(partyVote.PoliticalPartyId, FirstDivisor);
-            seatsBeforeAllocation.Add(partyVote.PoliticalPartyId, 0);
+            totalSeatsAfterAllocation.Add(partyVote.PoliticalPartyId, 0);
         }
 
         var comparisonList = new List<ComparisonItem>();
@@ -65,8 +65,36 @@ internal static class CouncilSeatAllocationCalculator
 
             if (topParties.Count == 0) continue;
 
-            ComparisonItem topParty;
             bool wonByLot = false;
+
+            if (i == totalCouncilSeatCount)
+            {
+                ComparisonItem winner = topParties.Count > 1
+                    ? topParties[Random.Shared.Next(topParties.Count)]
+                    : topParties[0];
+
+                foreach (var party in topParties)
+                {
+                    bool isWinner = party.PoliticalPartyId == winner.PoliticalPartyId;
+
+                    if (isWinner)
+                        totalSeatsAfterAllocation[party.PoliticalPartyId] += 1;
+
+                    partyAllocations.Add(new OriginalCouncilSeatAllocationDto
+                    {
+                        PoliticalPartyId = party.PoliticalPartyId,
+                        AllocatedSeat = i,
+                        ComparisonNumber = party.ComparisonNumber,
+                        AllocationDivisor = partyDivisors[party.PoliticalPartyId],
+                        TotalCouncilSeatCountForParty = totalSeatsAfterAllocation[party.PoliticalPartyId],
+                        OriginalElectionResultSetId = party.OriginalElectionResultSetId,
+                        WonByLotDrawing = isWinner && topParties.Count > 1
+                    });
+                }
+                continue;
+            }
+
+            ComparisonItem topParty;
 
             if(topParties.Count > 1)
             {
@@ -78,8 +106,7 @@ internal static class CouncilSeatAllocationCalculator
                 topParty = topParties[0];
             }
 
-            var seatsBefore = seatsBeforeAllocation[topParty.PoliticalPartyId];
-            seatsBeforeAllocation[topParty.PoliticalPartyId] += 1;
+            totalSeatsAfterAllocation[topParty.PoliticalPartyId] += 1;
 
             partyAllocations.Add(new OriginalCouncilSeatAllocationDto
             {
@@ -87,7 +114,7 @@ internal static class CouncilSeatAllocationCalculator
                 AllocatedSeat = i,
                 ComparisonNumber = topParty.ComparisonNumber,
                 AllocationDivisor = partyDivisors[topParty.PoliticalPartyId],
-                TotalSeatCountForPartyBeforeAllocation = seatsBefore,
+                TotalCouncilSeatCountForParty = totalSeatsAfterAllocation[topParty.PoliticalPartyId],
                 OriginalElectionResultSetId = topParty.OriginalElectionResultSetId,
                 WonByLotDrawing = wonByLot
             });

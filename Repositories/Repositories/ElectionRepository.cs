@@ -2,6 +2,7 @@
 using Repositories.Data;
 using Repositories.Entities;
 using Repositories.Interfaces;
+using System.Linq.Expressions;
 
 namespace Repositories.Repositories;
 
@@ -13,6 +14,12 @@ public class ElectionRepository(AppDbContext context) : IElectionRepository
     {
         _context.Add(entity);
         return Task.FromResult(entity);
+    }
+
+    public async Task<bool> OriginalElectionResultExistsAsync(Guid userId, int municipalityId, int electionId)
+    {
+        return await _context.OriginalElectionResultSets
+            .AnyAsync(x => x.UserId == userId && x.MunicipalityId == municipalityId && x.ElectionId == electionId);
     }
 
     public async Task<bool> ValidateElectionConstituencyIdInElectionResult(int constituencyId, int electionId, int municipalityId)
@@ -40,5 +47,15 @@ public class ElectionRepository(AppDbContext context) : IElectionRepository
             .Include(set => set.Municipality)
             .Include(set => set.Election)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<IReadOnlyList<OriginalElectionResultSet?>> GetOriginalResultsWithSeatAllocationsByIdAsync(int id, Guid userId)
+    {
+        return await _context.OriginalElectionResultSets
+            .Where(set => set.Id == id && set.UserId == userId)
+            .Include(set => set.OriginalConstituencyVoteResults)
+            .Include(set => set.OriginalCouncilSeatAllocations)
+                .ThenInclude(seats => seats.PoliticalParty)
+            .ToListAsync();
     }
 }
