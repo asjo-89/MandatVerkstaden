@@ -17,6 +17,7 @@ public class PoliticalParty
     public int? MunicipalityId { get; set; }
     public Municipality? Municipality { get; set; }
 
+    public ICollection<OriginalBoardSeatAllocation> OriginalBoardSeatAllocations { get; set; } = [];
     public ICollection<OriginalCouncilSeatAllocation> OriginalCouncilSeatAllocations { get; set; } = [];
     public ICollection<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; } = [];
     public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = [];

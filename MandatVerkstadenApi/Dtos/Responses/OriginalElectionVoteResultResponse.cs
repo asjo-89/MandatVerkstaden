@@ -18,5 +18,5 @@ public record OriginalVoteResultsWithSeatAllocations
         string PoliticalPartyName,
         int AllocatedSeat,
         decimal ComparisonNumber,
-        decimal TotalSeatCountForPartyBeforeAllocation
+        int TotalCouncilSeatCountForParty
     );

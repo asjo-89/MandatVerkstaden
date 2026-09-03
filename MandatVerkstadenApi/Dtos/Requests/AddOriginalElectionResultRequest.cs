@@ -1,4 +1,4 @@
-﻿using Services.Models;
+﻿using Services.Dtos;
 using System.ComponentModel.DataAnnotations;
 
 namespace MandatVerkstadenApi.Dtos.Requests;

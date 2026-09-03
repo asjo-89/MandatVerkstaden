@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Data;
 
@@ -11,9 +12,11 @@ using Repositories.Data;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260903165420_CreateTablesForBoardSeatAllocations")]
+    partial class CreateTablesForBoardSeatAllocations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("PoliticalPartiesId");
 
-                    b.ToTable("PartyGroupPoliticalParty", (string)null);
+                    b.ToTable("PartyGroupPoliticalParty");
                 });
 
             modelBuilder.Entity("PartyGroupScenario", b =>
@@ -49,7 +52,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ScenariosId");
 
-                    b.ToTable("PartyGroupScenario", (string)null);
+                    b.ToTable("PartyGroupScenario");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Election", b =>
@@ -69,7 +72,7 @@ namespace Repositories.Migrations
                     b.HasIndex("ElectionYear")
                         .IsUnique();
 
-                    b.ToTable("Elections", (string)null);
+                    b.ToTable("Elections");
                 });
 
             modelBuilder.Entity("Repositories.Entities.ElectionConstituency", b =>
@@ -103,7 +106,7 @@ namespace Repositories.Migrations
                     b.HasIndex("Name", "ElectionId", "MunicipalityId")
                         .IsUnique();
 
-                    b.ToTable("ElectionConstituencies", (string)null);
+                    b.ToTable("ElectionConstituencies");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Municipality", b =>
@@ -127,7 +130,7 @@ namespace Repositories.Migrations
                     b.HasIndex("MunicipalityCode", "ElectionAreaName")
                         .IsUnique();
 
-                    b.ToTable("Municipalities", (string)null);
+                    b.ToTable("Municipalities");
                 });
 
             modelBuilder.Entity("Repositories.Entities.OriginalBoardSeatAllocation", b =>
@@ -168,7 +171,7 @@ namespace Repositories.Migrations
                     b.HasIndex("OriginalBoardSeatAllocationSetId", "SeatAllocationStep", "PoliticalPartyId")
                         .IsUnique();
 
-                    b.ToTable("OriginalBoardSeatAllocations", (string)null);
+                    b.ToTable("OriginalBoardSeatAllocations");
                 });
 
             modelBuilder.Entity("Repositories.Entities.OriginalBoardSeatAllocationSet", b =>
@@ -193,7 +196,7 @@ namespace Repositories.Migrations
                     b.HasIndex("OriginalElectionResultSetId", "MaxSeatCount")
                         .IsUnique();
 
-                    b.ToTable("OriginalBoardSeatAllocationSets", (string)null);
+                    b.ToTable("OriginalBoardSeatAllocationSets");
                 });
 
             modelBuilder.Entity("Repositories.Entities.OriginalConstituencyVoteResult", b =>
@@ -225,7 +228,7 @@ namespace Repositories.Migrations
                     b.HasIndex("OriginalElectionResultSetId", "ElectionConstituencyId", "PoliticalPartyId")
                         .IsUnique();
 
-                    b.ToTable("OriginalConstituencyVoteResults", (string)null);
+                    b.ToTable("OriginalConstituencyVoteResults");
                 });
 
             modelBuilder.Entity("Repositories.Entities.OriginalCouncilSeatAllocation", b =>
@@ -271,7 +274,7 @@ namespace Repositories.Migrations
                     b.HasIndex("AllocatedSeat", "PoliticalPartyId", "OriginalElectionResultSetId")
                         .IsUnique();
 
-                    b.ToTable("OriginalCouncilSeatAllocations", (string)null);
+                    b.ToTable("OriginalCouncilSeatAllocations");
                 });
 
             modelBuilder.Entity("Repositories.Entities.OriginalElectionResultSet", b =>
@@ -306,7 +309,7 @@ namespace Repositories.Migrations
                     b.HasIndex("UserId", "MunicipalityId", "ElectionId")
                         .IsUnique();
 
-                    b.ToTable("OriginalElectionResultSets", (string)null);
+                    b.ToTable("OriginalElectionResultSets");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PartyGroup", b =>
@@ -333,7 +336,7 @@ namespace Repositories.Migrations
                     b.HasIndex("UserId", "Name")
                         .IsUnique();
 
-                    b.ToTable("PartyGroups", (string)null);
+                    b.ToTable("PartyGroups");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PoliticalParty", b =>
@@ -371,7 +374,7 @@ namespace Repositories.Migrations
                         .IsUnique()
                         .HasFilter("[MunicipalityId] IS NOT NULL");
 
-                    b.ToTable("PoliticalParties", (string)null);
+                    b.ToTable("PoliticalParties");
                 });
 
             modelBuilder.Entity("Repositories.Entities.RefreshToken", b =>
@@ -408,7 +411,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Scenario", b =>
@@ -442,7 +445,7 @@ namespace Repositories.Migrations
                     b.HasIndex("Name", "UserId")
                         .IsUnique();
 
-                    b.ToTable("Scenarios", (string)null);
+                    b.ToTable("Scenarios");
                 });
 
             modelBuilder.Entity("Repositories.Entities.ScenarioConstituencyVoteResult", b =>
@@ -477,7 +480,7 @@ namespace Repositories.Migrations
                     b.HasIndex("PoliticalPartyId", "ScenarioId")
                         .IsUnique();
 
-                    b.ToTable("ScenarioConstituencyVoteResults", (string)null);
+                    b.ToTable("ScenarioConstituencyVoteResults");
                 });
 
             modelBuilder.Entity("Repositories.Entities.ScenarioCouncilSeatAllocation", b =>
@@ -517,7 +520,7 @@ namespace Repositories.Migrations
                     b.HasIndex("AllocatedSeat", "ScenarioId", "PoliticalPartyId")
                         .IsUnique();
 
-                    b.ToTable("ScenarioCouncilSeatAllocations", (string)null);
+                    b.ToTable("ScenarioCouncilSeatAllocations");
                 });
 
             modelBuilder.Entity("Repositories.Entities.User", b =>
@@ -566,7 +569,7 @@ namespace Repositories.Migrations
                     b.HasIndex("Email", "UserName")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PartyGroupPoliticalParty", b =>

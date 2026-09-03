@@ -18,7 +18,10 @@ const AddElectionResultForm = ({
 const [selectedPartyId, setSelectedPartyId] = useState('');
 const [electionYearChosen, setElectionYearChosen] = useState(false);
 const [municipalities, setMunicipalities] = useState([]);
+const [totalVotesCount, setTotalVotesCount] = useState(null);
+
 const selectedPartyIds = new Set(originalElectionResults.politicalParties.map(party => String(party.id)));
+
 
 const [newParty, setNewParty] = useState({
     name: "",
@@ -174,6 +177,8 @@ const handleVoteResultChange = (partyId) => (e) => {
         ;
         return { ...prev, voteResults };
     });
+
+    setTotalVotesCount(originalElectionResults.voteResults.reduce((total, vote) => total + Number(vote.numberOfVotes || 0), 0));
 }
 
 const handleSubmit = async (e) => {
@@ -209,7 +214,7 @@ const handleSubmit = async (e) => {
     }
     alert("Valresultatet har sparats.");
     console.log("Received allocation results:", data);
-    setAllocatedResults(data);
+    setAllocatedResults(data);    
 }
 
   return (
@@ -277,20 +282,20 @@ const handleSubmit = async (e) => {
                             btnText="+"
                             onClick={handleAddParty} />
                     </div>
-                    <div className="selected-parties-container small-width">
-                        <h3 className="manrope-extra-bold">Valresultat</h3>
+                    <div className="table-container">
                         <table className="selected-parties-table">
                             <thead>
                                 <tr>
-                                    <th>Parti</th>
+                                    <th className="text-align-left">Parti</th>
                                     <th>Röster</th>
+                                    <th></th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {originalElectionResults.politicalParties.map(party => (
                                     <tr key={party.id}>
-                                        <td>{party.name}</td>
+                                        <td className="text-align-left">{party.name}</td>
                                         <td>
                                             <Input
                                                 id={`voteResult-${party.id}`}
@@ -315,8 +320,8 @@ const handleSubmit = async (e) => {
                                 ))}
                             </tbody>
                         </table>
-                        <p>Totalt antal röster: 
-                            {originalElectionResults.voteResults.reduce((total, vote) => total + Number(vote.numberOfVotes || 0), 0)}
+                        <p className="total-votes-text">Totalt antal röster: 
+                            <span className="manrope-bold">{totalVotesCount}</span>
                         </p>
                     </div>
                 </>

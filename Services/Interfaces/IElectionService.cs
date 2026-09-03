@@ -1,11 +1,9 @@
-﻿using Services.Models;
-using Services.Services;
-
+﻿using Services.Dtos;
 namespace Services.Interfaces;
 
 public interface IElectionService
 {
     Task<IReadOnlyList<ElectionDto>> GetAllYearsAsync();
-    Task<IReadOnlyList<OriginalResultsWithSeatAllocations>?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto);
-    Task<IReadOnlyList<OriginalResultsWithSeatAllocations>> GetOriginalResultsWithSeatAllocationsByIdAsync(int id, Guid userId);
+    Task<OriginalElectionResultSetDto?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto);
+    Task<OriginalElectionResultSetDto?> GetOriginalElectionResultSetByIdAsync(int id, Guid userId);
 }

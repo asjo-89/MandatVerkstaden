@@ -13,6 +13,8 @@ namespace Repositories.Data
         public DbSet<Election> Elections { get; set; }
         public DbSet<ElectionConstituency> ElectionConstituencies { get; set; }
         public DbSet<Municipality> Municipalities { get; set; }
+        public DbSet<OriginalBoardSeatAllocation> OriginalBoardSeatAllocations { get; set; }
+        public DbSet<OriginalBoardSeatAllocationSet> OriginalBoardSeatAllocationSets { get; set; }
         public DbSet<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; }
         public DbSet<OriginalCouncilSeatAllocation> OriginalCouncilSeatAllocations { get; set; }
         public DbSet<OriginalElectionResultSet> OriginalElectionResultSets { get; set; }

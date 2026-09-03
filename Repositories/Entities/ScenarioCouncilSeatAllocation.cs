@@ -4,7 +4,7 @@ public class ScenarioCouncilSeatAllocation
 {
     public int Id { get; set; }
     public int AllocatedSeat { get; set; }
-    public int TotalSeatCountForPartyBeforeAllocation { get; set; }
+    public int TotalCouncilSeatCountForParty { get; set; }
     public decimal ComparisonNumber { get; set; }
     public decimal AllocationDivisor { get; set; }
 

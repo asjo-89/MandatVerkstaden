@@ -14,7 +14,7 @@ public class OriginalCouncilSeatAllocationConfiguration : IEntityTypeConfigurati
 
         builder
             .Property(ocsa => ocsa.AllocationDivisor)
-            .HasPrecision(18, 4);
+            .HasPrecision(18, 2);
 
         builder
             .Property(ocsa => ocsa.ComparisonNumber)

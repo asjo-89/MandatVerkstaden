@@ -18,7 +18,7 @@ function ElectionResults() {
         electionYearId: '',
         totalCouncilSeatCount: '',
         politicalParties: [],
-        voteResults: [],
+        voteResults: []
     });
 
     useEffect(() => {
@@ -86,15 +86,16 @@ function ElectionResults() {
             <p>För tillfället går det bara att skapa scenario för kommuner med en valkrets.</p>
 
             <div className="content">
-                {allocatedResults && allocatedResults.length > 0 ? (
+                {allocatedResults ? (
                     <ResultTable originalAllocationResults={allocatedResults} />
-                    ) : (
-                    <AddElectionResultForm 
-                        setAllocatedResults={setAllocatedResults}
-                        originalElectionResults={originalElectionResults} 
-                        setOriginalElectionResults={setOriginalElectionResults} 
-                        allPoliticalParties={allPoliticalParties}
-                        electionYears={electionYears} />
+                    ) 
+                    : (
+                        <AddElectionResultForm 
+                            setAllocatedResults={setAllocatedResults}
+                            originalElectionResults={originalElectionResults} 
+                            setOriginalElectionResults={setOriginalElectionResults} 
+                            allPoliticalParties={allPoliticalParties}
+                            electionYears={electionYears} />
                 )}
             </div>
         </div>

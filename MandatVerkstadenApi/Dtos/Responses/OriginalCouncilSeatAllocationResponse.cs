@@ -4,8 +4,10 @@ public record OriginalCouncilSeatAllocationResponse
 (
     int Id,
     int AllocatedSeats,
-    int TotalSeatCountForPartyBeforeAllocation,
+    int TotalCouncilSeatCountForParty,
     decimal ComparisonNumber,
     decimal AllocationDivisor,
-    string PoliticalPartyName
+    int PoliticalPartyId,
+    string PoliticalPartyName,
+    bool WonByLotDrawing
 );

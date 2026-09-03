@@ -1,8 +1,7 @@
 ﻿using Repositories.Entities;
 using Repositories.Interfaces;
 using Services.Interfaces;
-using Services.Models;
-using System.Reflection.Metadata.Ecma335;
+using Services.Dtos;
 
 namespace Services.Services;
 

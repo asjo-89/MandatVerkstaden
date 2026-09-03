@@ -1,6 +1,4 @@
-﻿using Repositories.Entities;
-
-namespace Services.Models;
+﻿namespace Services.Dtos;
 
 public record OriginalCouncilSeatAllocationDto
 {

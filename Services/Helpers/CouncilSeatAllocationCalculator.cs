@@ -1,4 +1,5 @@
-﻿using Services.Models;
+﻿using Services.Dtos;
+using Services.Models;
 
 namespace Services.Helpers;
 
@@ -20,7 +21,7 @@ internal static class CouncilSeatAllocationCalculator
 
 
     internal static List<OriginalCouncilSeatAllocationDto> CalculateCouncilSeatAllocations(
-        IEnumerable<OriginalConstituencyVoteResultDto> votes,
+        IEnumerable<Dtos.OriginalConstituencyVoteResultDto> votes,
         int totalCouncilSeatCount,
         decimal electoralThreshold)
     {

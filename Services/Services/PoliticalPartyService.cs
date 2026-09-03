@@ -3,7 +3,7 @@ using Repositories.Entities;
 using Repositories.Interfaces;
 using Services.Exceptions;
 using Services.Interfaces;
-using Services.Models;
+using Services.Dtos;
 
 namespace Services.Services;
 

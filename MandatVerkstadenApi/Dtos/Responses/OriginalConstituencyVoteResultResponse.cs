@@ -6,6 +6,7 @@ public record OriginalConstituencyVoteResultResponse
         int NumberOfVotes,
         int PoliticalPartyId,
         string PoliticalPartyName,
+        int ElectionConstituencyId,
         string ElectionConstituencyName
     );
 

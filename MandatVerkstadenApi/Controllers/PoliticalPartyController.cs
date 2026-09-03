@@ -1,9 +1,8 @@
 ﻿using MandatVerkstadenApi.Dtos.Requests;
 using MandatVerkstadenApi.Dtos.Responses;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
-using Services.Models;
+using Services.Dtos;
 using System.Security.Claims;
 
 namespace MandatVerkstadenApi.Controllers;

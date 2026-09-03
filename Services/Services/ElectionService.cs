@@ -1,8 +1,8 @@
 ﻿using Repositories.Entities;
 using Repositories.Interfaces;
+using Services.Dtos;
 using Services.Helpers;
 using Services.Interfaces;
-using Services.Models;
 
 namespace Services.Services;
 
@@ -11,7 +11,7 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
     private readonly IElectionRepository _repo = repo;
     private readonly IUnitOfWork _context = context;
 
-    public async Task<IReadOnlyList<OriginalResultsWithSeatAllocations>?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto)
+    public async Task<OriginalElectionResultSetDto?> AddOriginalResultSetAsync(OriginalElectionResultSetDto dto)
     {
         if (dto is null)
             throw new ArgumentNullException(nameof(dto), "The input parameter is null");
@@ -33,39 +33,21 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
             if (!isValid)
                 throw new ArgumentException($"ElectionConstituencyId {id} does not fit with the ElectionId and MunicipalityId", nameof(dto));
         }
-        dto.SeatAllocations = CouncilSeatAllocationCalculator.CalculateCouncilSeatAllocations(dto.VoteResults, dto.TotalCouncilSeatCount, 2);
+        dto.CouncilSeatAllocations = CouncilSeatAllocationCalculator.CalculateCouncilSeatAllocations(dto.VoteResults, dto.TotalCouncilSeatCount, 2);
 
-        var entity = await _repo.AddOriginalElectionResultAsync(DtoToEntity(dto));
+        var entity = await _repo.AddOriginalElectionResult(DtoToEntity(dto));
 
         if (entity is null)
             return null;
 
         await _context.SaveChangesAsync();
 
-        var results = await _repo.GetOriginalResultsWithSeatAllocationsByIdAsync(entity.Id, entity.UserId);
+        var result = await _repo.GetOriginalElectionResultSetByIdAsync(entity.Id, entity.UserId);
 
-        var allocationsList = results
-            .Where(result => result is not null)
-            .SelectMany(result => result!.OriginalCouncilSeatAllocations)
-            .Select(x => new OriginalResultsWithSeatAllocations
-                (
-                    SeatAllocationId: x.Id,
-                    OriginalSetId: x.OriginalElectionResultSetId,
-                    PoliticalPartyId: x.PoliticalPartyId,
-                    PoliticalPartyName: x.PoliticalParty.Name,
-                    NumberOfVotes: x.OriginalElectionResultSet.OriginalConstituencyVoteResults
-                        .Where(a => a.PoliticalPartyId == x.PoliticalPartyId)
-                        .Sum(a => a.NumberOfVotes),
-                    AllocatedSeat: x.AllocatedSeat,
-                    ComparisonNumber: Math.Round(x.ComparisonNumber, 4),
-                    AllocationDivisor: x.AllocationDivisor,
-                    TotalCouncilSeatCountForParty: x.TotalCouncilSeatCountForParty,
-                    WonByLotDrawing: x.WonByLotDrawing
-                )).ToList();
+        if (result is null)
+            return null;
 
-        return allocationsList is null
-            ? null
-            : allocationsList;
+        return ResultSetEntityToDto(result);
     }
 
     public async Task<IReadOnlyList<ElectionDto>> GetAllYearsAsync()
@@ -74,35 +56,122 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         return years.Select(e => new ElectionDto(Id: e.Id, ElectionYear: e.ElectionYear)).ToList();
     }
 
-    public async Task<IReadOnlyList<OriginalResultsWithSeatAllocations>> GetOriginalResultsWithSeatAllocationsByIdAsync(int id, Guid userId)
+    public async Task<OriginalElectionResultSetDto?> GetOriginalElectionResultSetByIdAsync(int id, Guid userId)
     {
-        if (id <= 0)
-            throw new ArgumentException(nameof(id), "Input parameter id is invalid.");
+        if (id <= 0 || userId == Guid.Empty)
+            throw new ArgumentException("Input parameters id and/or userId is invalid.");
 
-        var results = await _repo.GetOriginalResultsWithSeatAllocationsByIdAsync(id, userId);
+        var entity = await _repo.GetOriginalElectionResultSetByIdAsync(id, userId);
 
-        var dtoList = results
-            .Where(result => result is not null)
-            .SelectMany(result => result!.OriginalCouncilSeatAllocations)
-            .Select(x => new OriginalResultsWithSeatAllocations
-                (
-                    SeatAllocationId: x.Id,
-                    OriginalSetId: x.OriginalElectionResultSetId,
-                    PoliticalPartyId: x.PoliticalPartyId,
-                    PoliticalPartyName: x.PoliticalParty.Name,
-                    NumberOfVotes: x.OriginalElectionResultSet.OriginalConstituencyVoteResults
-                        .Where(a => a.PoliticalPartyId == x.PoliticalPartyId)
-                        .Sum(a => a.NumberOfVotes),
-                    AllocatedSeat: x.AllocatedSeat,
-                    ComparisonNumber: Math.Round(x.ComparisonNumber, 4),
-                    AllocationDivisor: x.AllocationDivisor,
-                    TotalCouncilSeatCountForParty: x.TotalCouncilSeatCountForParty,
-                    WonByLotDrawing: x.WonByLotDrawing
-                )).ToList();
-        return dtoList ?? [];
+        if (entity is null)
+            throw new InvalidOperationException("No election result set was found.");
+
+        var electionResultSet = new OriginalElectionResultSetDto
+        {
+            Id = entity.Id,
+            TotalCouncilSeatCount = entity.TotalCouncilSeatCount,
+            MunicipalityName = entity.MunicipalityName,
+            ElectionYearId = entity.MunicipalityId,
+            ElectionYear = entity.ElectionYear,
+            VoteResults = entity.OriginalConstituencyVoteResultDtos
+                .Select(voteResult => new OriginalConstituencyVoteResultDto
+                {
+                    Id = voteResult.Id,
+                    NumberOfVotes = voteResult.NumberOfVotes,
+                    PoliticalPartyId = voteResult.PoliticalPartyId,
+                    PoliticalPartyName = voteResult.PoliticalPartyName,
+                    ElectionConstituencyId = voteResult.ElectionConstituencyId,
+                    ElectionConstituencyName = voteResult.ElectionConstituencyName
+                }).ToList(),
+            CouncilSeatAllocations = entity.OriginalCouncilSeatAllocationDtos
+                .Select(councilSeats => new OriginalCouncilSeatAllocationDto
+                {
+                    Id = councilSeats.Id,
+                    PoliticalPartyId = councilSeats.PoliticalPartyId,
+                    PoliticalPartyName = councilSeats.PoliticalPartyName,
+                    AllocatedSeat = councilSeats.AllocatedSeat,
+                    AllocationDivisor = councilSeats.AllocationDivisor,
+                    ComparisonNumber = councilSeats.ComparisonNumber,
+                    WonByLotDrawing = councilSeats.WonByLotDrawing,
+                    TotalCouncilSeatCountForParty = councilSeats.TotalCouncilSeatCountForParty
+                }).ToList(),
+            BoardSeatAllocationSet = entity.OriginalBoardSeatAllocationSetDto == null
+            ? null
+            : new OriginalBoardSeatAllocationSetDto
+            {
+                Id = entity.OriginalBoardSeatAllocationSetDto.Id,
+                MaxSeatCount = entity.OriginalBoardSeatAllocationSetDto.MaxSeatCount,
+                OriginalBoardSeatAllocations = entity.OriginalBoardSeatAllocationSetDto.OriginalBoardSeatAllocationDtos
+                    .Select(boardSeats => new OriginalBoardSeatAllocationDto
+                    {
+                        Id = boardSeats.Id,
+                        AllocationDivisor = boardSeats.AllocationDivisor,
+                        SeatAllocationStep = boardSeats.SeatAllocationStep,
+                        ComparisonNumber = boardSeats.ComparisonNumber,
+                        WonByLotDrawing = boardSeats.WonByLotDrawing,
+                        LotDrawingGroupId = boardSeats.LotDrawingGroupId,
+                        PoliticalPartyName = boardSeats.PoliticalPartyName,
+                        PoliticalPartyId = boardSeats.PoliticalPartyId
+                    }).ToList()
+            }
+        };
+        return electionResultSet;
     }
 
 
+
+    private static OriginalElectionResultSetDto ResultSetEntityToDto(Repositories.Dtos.OriginalElectionResultSetDto entityDto)
+    {
+        return new OriginalElectionResultSetDto
+        {
+            Id = entityDto.Id,
+            TotalCouncilSeatCount = entityDto.TotalCouncilSeatCount,
+            MunicipalityName = entityDto.MunicipalityName,
+            ElectionYearId = entityDto.MunicipalityId,
+            ElectionYear = entityDto.ElectionYear,
+            VoteResults = entityDto.OriginalConstituencyVoteResultDtos
+                .Select(voteResult => new OriginalConstituencyVoteResultDto
+                {
+                    Id = voteResult.Id,
+                    NumberOfVotes = voteResult.NumberOfVotes,
+                    PoliticalPartyId = voteResult.PoliticalPartyId,
+                    PoliticalPartyName = voteResult.PoliticalPartyName,
+                    ElectionConstituencyId = voteResult.ElectionConstituencyId,
+                    ElectionConstituencyName = voteResult.ElectionConstituencyName
+                }).ToList(),
+            CouncilSeatAllocations = entityDto.OriginalCouncilSeatAllocationDtos
+                .Select(councilSeats => new OriginalCouncilSeatAllocationDto
+                {
+                    Id = councilSeats.Id,
+                    PoliticalPartyId = councilSeats.PoliticalPartyId,
+                    PoliticalPartyName = councilSeats.PoliticalPartyName,
+                    AllocatedSeat = councilSeats.AllocatedSeat,
+                    AllocationDivisor = councilSeats.AllocationDivisor,
+                    ComparisonNumber = councilSeats.ComparisonNumber,
+                    WonByLotDrawing = councilSeats.WonByLotDrawing,
+                    TotalCouncilSeatCountForParty = councilSeats.TotalCouncilSeatCountForParty
+                }).ToList(),
+            BoardSeatAllocationSet = entityDto.OriginalBoardSeatAllocationSetDto == null
+            ? null
+            : new OriginalBoardSeatAllocationSetDto
+            {
+                Id = entityDto.OriginalBoardSeatAllocationSetDto.Id,
+                MaxSeatCount = entityDto.OriginalBoardSeatAllocationSetDto.MaxSeatCount,
+                OriginalBoardSeatAllocations = entityDto.OriginalBoardSeatAllocationSetDto.OriginalBoardSeatAllocationDtos
+                    .Select(boardSeats => new OriginalBoardSeatAllocationDto
+                    {
+                        Id = boardSeats.Id,
+                        AllocationDivisor = boardSeats.AllocationDivisor,
+                        SeatAllocationStep = boardSeats.SeatAllocationStep,
+                        ComparisonNumber = boardSeats.ComparisonNumber,
+                        WonByLotDrawing = boardSeats.WonByLotDrawing,
+                        LotDrawingGroupId = boardSeats.LotDrawingGroupId,
+                        PoliticalPartyName = boardSeats.PoliticalPartyName,
+                        PoliticalPartyId = boardSeats.PoliticalPartyId
+                    }).ToList()
+            }
+        };
+    }
 
     private static OriginalElectionResultSet DtoToEntity(OriginalElectionResultSetDto dto)
     {
@@ -118,7 +187,7 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
                 ElectionConstituencyId = vote.ElectionConstituencyId,
                 PoliticalPartyId = vote.PoliticalPartyId
             }).ToList(),
-            OriginalCouncilSeatAllocations = dto.SeatAllocations.Select(a => new OriginalCouncilSeatAllocation
+            OriginalCouncilSeatAllocations = dto.CouncilSeatAllocations.Select(a => new OriginalCouncilSeatAllocation
             {
                 AllocatedSeat = a.AllocatedSeat,
                 AllocationDivisor = a.AllocationDivisor,
@@ -130,40 +199,40 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         };
     }
 
-    private static OriginalElectionResultSetDto EntityToDto(OriginalElectionResultSet entity)
-    {
-        return new OriginalElectionResultSetDto
-        {
-            Id = entity.Id,
-            TotalCouncilSeatCount = entity.TotalCouncilSeatCount,
-            Municipality = entity.Municipality is null 
-                ? null 
-                : new MunicipalityDto
-            {
-                Id = entity.Municipality.Id,
-                ElectionAreaName = entity.Municipality.ElectionAreaName
-            },
-            Election = entity.Election is null 
-                ? null 
-                : new ElectionDto(Id: entity.Election.Id, ElectionYear: entity.Election.ElectionYear),
-            VoteResults = (entity.OriginalConstituencyVoteResults ?? []).Select(vote => new OriginalConstituencyVoteResultDto
-            {
-                Id = vote.Id,
-                NumberOfVotes = vote.NumberOfVotes,
-                PoliticalPartyId = vote.PoliticalPartyId,
-                PoliticalPartyName = vote.PoliticalParty?.Name ?? "",
-                ElectionConstituencyName = vote.ElectionConstituency?.Name ?? "",
-            }).ToList(),
-            SeatAllocations = (entity.OriginalCouncilSeatAllocations ?? []).Select(a => new OriginalCouncilSeatAllocationDto
-            {
-                Id = a.Id,
-                AllocatedSeat = a.AllocatedSeat,
-                TotalCouncilSeatCountForParty = a.TotalCouncilSeatCountForParty,
-                ComparisonNumber = a.ComparisonNumber,
-                AllocationDivisor = a.AllocationDivisor,
-                PoliticalPartyName = a.PoliticalParty?.Name ?? "",
-            }).ToList()
-        };
-    }
+    //private static Dtos.OriginalElectionResultSetDto EntityToDto(OriginalElectionResultSet entity)
+    //{
+    //    return new Dtos.OriginalElectionResultSetDto
+    //    {
+    //        Id = entity.Id,
+    //        TotalCouncilSeatCount = entity.TotalCouncilSeatCount,
+    //        M = entity.Municipality is null 
+    //            ? null 
+    //            : new MunicipalityDto
+    //        {
+    //            Id = entity.Municipality.Id,
+    //            ElectionAreaName = entity.Municipality.ElectionAreaName
+    //        },
+    //        Election = entity.Election is null 
+    //            ? null 
+    //            : new ElectionDto(Id: entity.Election.Id, ElectionYear: entity.Election.ElectionYear),
+    //        VoteResults = (entity.OriginalConstituencyVoteResults ?? []).Select(vote => new OriginalConstituencyVoteResultDto
+    //        {
+    //            Id = vote.Id,
+    //            NumberOfVotes = vote.NumberOfVotes,
+    //            PoliticalPartyId = vote.PoliticalPartyId,
+    //            PoliticalPartyName = vote.PoliticalParty?.Name ?? "",
+    //            ElectionConstituencyName = vote.ElectionConstituency?.Name ?? "",
+    //        }).ToList(),
+    //        SeatAllocations = (entity.OriginalCouncilSeatAllocations ?? []).Select(a => new OriginalCouncilSeatAllocationDto
+    //        {
+    //            Id = a.Id,
+    //            AllocatedSeat = a.AllocatedSeat,
+    //            TotalCouncilSeatCountForParty = a.TotalCouncilSeatCountForParty,
+    //            ComparisonNumber = a.ComparisonNumber,
+    //            AllocationDivisor = a.AllocationDivisor,
+    //            PoliticalPartyName = a.PoliticalParty?.Name ?? "",
+    //        }).ToList()
+    //    };
+    //}
 }
 
