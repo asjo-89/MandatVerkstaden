@@ -8,6 +8,7 @@ public record OriginalBoardSeatAllocationResponse
         int SeatAllocationStep,
         decimal ComparisonNumber,
         decimal AllocationDivisor,
+        bool WonSeat,
         bool WonByLotDrawing,
         int LotDrawingGroupId
     );

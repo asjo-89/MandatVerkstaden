@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MandatVerkstadenApi.Dtos.Requests;
+namespace Services.Dtos;
 
 public record AddOriginalBoardSeatAllocationSetRequest
 {
-    [Required(ErrorMessage = "Koppling måste finnas till ett valresultat.")]
     public int OriginalElectionResultSetId { get; init; }
 
-    [Required(ErrorMessage = "Du måste ange max antal platser för beräkningen.")]
-    public int MaxSeatCount { get; init; }
-}
+    [Required(ErrorMessage = "Du måste ange det högsta antalet platser du vill räkna på.")]
+    public required int MaxSeatCount { get; init; }
+};

@@ -28,26 +28,6 @@ form {
     & label {
         color: var(--font-clr-primary);
     }
-
-    /* & .input-group {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 0.5rem;
-    } */
-    
-    /* & input,
-    & select {
-        width: 100%;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: 1px solid var(--grey);
-        font-size: 1rem;
-        color: var(--font-clr-primary);
-        background-color: var(--white);
-    } */
 }
 
  .row-group {
@@ -103,6 +83,10 @@ form {
 .input-group-medium,
 .medium-width {
     flex: 2;
+}
+
+.input-group-small-18 {
+    max-width: 18em;
 }
 
 input::-webkit-outer-spin-button,

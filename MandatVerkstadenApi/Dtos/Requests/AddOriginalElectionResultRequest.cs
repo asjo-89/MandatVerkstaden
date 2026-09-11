@@ -17,7 +17,7 @@ public record AddOriginalElectionResultRequest
 
 
     [Required(ErrorMessage = "Du måste ange ett valresultat.")]
-    public ICollection<OriginalConstituencyVoteResultDto> VoteResults { get; init; } = [];
+    public ICollection<OriginalConstituencyVoteResultDto> VoteResults { get; init; } = new List<OriginalConstituencyVoteResultDto>();
 }
 
 

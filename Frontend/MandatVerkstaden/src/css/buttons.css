@@ -4,6 +4,7 @@
     padding: 0.6rem 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .btn-small {
@@ -25,13 +26,13 @@
 }
 
 .btn-accent {
-    background-color: var(--orange);
+    background-color: var(--accent);
     color: var(--font-clr-white);
-    box-shadow: inset 0px 0px 4px var(--dark-orange);
+    box-shadow: inset 0px 0px 8px rgb(0, 0, 0, 0.4);
     transition: all 0.2s ease-in-out;
 
     &:hover {
-        background-color: var(--dark-orange);
+        background-color: var(--accent-light);
     }
 }
 

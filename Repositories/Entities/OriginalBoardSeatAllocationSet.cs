@@ -10,6 +10,6 @@ public class OriginalBoardSeatAllocationSet
     public int OriginalElectionResultSetId { get; set; }
     public OriginalElectionResultSet OriginalElectionResultSet { get; set; } = null!;
 
-    public ICollection<OriginalBoardSeatAllocation> OriginalBoardSeatAllocations { get; set; } = [];
+    public ICollection<OriginalBoardSeatAllocation> OriginalBoardSeatAllocations { get; set; } = new List<OriginalBoardSeatAllocation>();
     #endregion
 }

@@ -17,11 +17,11 @@ public class PoliticalParty
     public int? MunicipalityId { get; set; }
     public Municipality? Municipality { get; set; }
 
-    public ICollection<OriginalBoardSeatAllocation> OriginalBoardSeatAllocations { get; set; } = [];
-    public ICollection<OriginalCouncilSeatAllocation> OriginalCouncilSeatAllocations { get; set; } = [];
-    public ICollection<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; } = [];
-    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = [];
-    public ICollection<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; } = [];
-    public ICollection<PartyGroup> PartyGroups { get; set; } = [];
+    public ICollection<OriginalBoardSeatAllocation> OriginalBoardSeatAllocations { get; set; } = new List<OriginalBoardSeatAllocation>();
+    public ICollection<OriginalCouncilSeatAllocation> OriginalCouncilSeatAllocations { get; set; } = new List<OriginalCouncilSeatAllocation>();
+    public ICollection<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; } = new List<OriginalConstituencyVoteResult>();
+    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = new List<ScenarioConstituencyVoteResult>();
+    public ICollection<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; } = new List<ScenarioCouncilSeatAllocation>();
+    public ICollection<PartyGroup> PartyGroups { get; set; } = new List<PartyGroup>();
     #endregion
 }

@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Dtos;
 using Services.Interfaces;
-using Services.Models;
 using System.Security.Claims;
+using System.Xml;
 
 namespace MandatVerkstadenApi.Controllers;
 
 
 [ApiController]
 [Route("api/[controller]")]
-public class ElectionController(IElectionService electionService, IPoliticalPartyService politicalPartyService) : Controller
+public class ElectionController(IElectionService electionService, IPoliticalPartyService politicalPartyService) : ControllerBase
 {
     private readonly IElectionService _electionService = electionService;
     private readonly IPoliticalPartyService _politicalPartyService = politicalPartyService;
@@ -39,6 +39,31 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
         return Ok(ResultSetDtoToReponse(addedResult));
     }
 
+    [HttpPost("add-board-allocations")]
+    [Authorize]
+    public async Task<IActionResult> AddOriginalBoardSeatAllocations(AddOriginalBoardSeatAllocationSetRequest request)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem("Du måste fylla i alla fält.");
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim is null || !Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized("Du måste logga in.");
+
+        var allocationsDto = new OriginalBoardSeatAllocationSetDto
+        {
+            MaxSeatCount = request.MaxSeatCount,
+            OriginalElectionResultSetId = request.OriginalElectionResultSetId
+        };
+
+        var addedResult = await _electionService.AddOriginalBoardSeatAllocationSetAsync(allocationsDto, userId);
+
+        if (addedResult is null)
+            return BadRequest("Något gick fel. Försök igen senare.");
+
+        return Ok(BoardAllocationSetToResponse(addedResult));
+    }
 
     [HttpGet("get-all")]
     public async Task<IActionResult> GetAllYears()
@@ -49,7 +74,28 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
             : NotFound(new { message = "Inga valår hittades." });
     }
 
-    [HttpGet("get-election-result")]
+    [HttpGet("get-all-election-results")]
+    public async Task<IActionResult> GetAllElectionResultSets()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim is null || !Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized("Du måste logga in.");
+
+        var resultSets = await _electionService.GetAllOriginalElectionResultSetsAsync(userId);
+
+        if (!resultSets.Any())
+            return NotFound("Inga resultat hittades.");
+        var response = new List<OriginalElectionResultSetReponse>();
+        foreach(var set in resultSets)
+        {
+            response.Add(ResultSetDtoToReponse(set));
+        }
+
+        return Ok(response);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetElectionResultSetById(int originalElectionResultSetId)
     {
         if (originalElectionResultSetId <= 0)
@@ -68,7 +114,28 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
     }
 
 
-
+    private static OriginalBoardSeatAllocationSetResponse BoardAllocationSetToResponse(OriginalBoardSeatAllocationSetDto dto)
+    {
+        return new OriginalBoardSeatAllocationSetResponse
+        {
+            Id = dto.Id ?? 0,
+            MaxSeatCount = dto.MaxSeatCount,
+            OriginalElectionResultSetId = dto.OriginalElectionResultSetId,
+            BoardSeatAllocations = dto.OriginalBoardSeatAllocations
+                .Select(x => new OriginalBoardSeatAllocationResponse
+                (
+                    x.Id ?? 0,
+                    x.PoliticalPartyId,
+                    x.PoliticalPartyName,
+                    x.SeatAllocationStep,
+                    x.ComparisonNumber,
+                    x.AllocationDivisor,
+                    x.WonSeat,
+                    x.WonByLotDrawing,
+                    x.LotDrawingGroupId
+                )).ToList()
+        };
+    }
 
 
     private static OriginalElectionResultSetReponse ResultSetDtoToReponse(OriginalElectionResultSetDto dto)
@@ -76,6 +143,7 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
         return new OriginalElectionResultSetReponse
         {
             Id = dto.Id ?? 0,
+            CreatedDate = dto.CreatedDate,
             Municipality = new MunicipalityResponse
             (
                 dto.MunicipalityId,
@@ -87,6 +155,7 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
                 dto.ElectionYearId,
                 dto.ElectionYear
             ),
+            
             TotalCouncilSeatCount = dto.TotalCouncilSeatCount,
             BoardSeatAllocationSet = dto.BoardSeatAllocationSet == null
             ? null
@@ -103,6 +172,7 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
                         boardSet.SeatAllocationStep,
                         boardSet.ComparisonNumber,
                         boardSet.AllocationDivisor,
+                        boardSet.WonSeat,
                         boardSet.WonByLotDrawing,
                         boardSet.LotDrawingGroupId
                     )).ToList()
@@ -151,50 +221,5 @@ public class ElectionController(IElectionService electionService, IPoliticalPart
         };
     }
 
-    //private static OriginalElectionVoteResultResponse DtoToResponse(OriginalElectionResultSetDto dto)
-    //{
-    //    return new OriginalElectionVoteResultResponse
-    //    (
-    //        Id: dto.Id ?? 0,
-    //        Municipality: new MunicipalityResponse
-    //        (
-    //            Id: dto.Municipality?.Id ?? 0,
-    //            ElectionAreaName: dto.Municipality?.ElectionAreaName ?? "",
-    //            ElectionConstituencies: []
-    //        ),
-    //        Election: new ElectionResponse
-    //        (
-    //            Id: dto.Election?.Id ?? 0,
-    //            ElectionYear: dto.Election?.ElectionYear ?? 0
-    //        ),
-    //        PoliticalParties: (dto.PoliticalParties ?? [])
-    //            .Select(party => new PoliticalPartyResponse(party.Id, party.Name, null, null, null, null))
-    //            .ToList(),
-    //        VoteResults: (dto.VoteResults ?? [])
-    //            .Select(result =>
-    //                new OriginalConstituencyVoteResultResponse
-    //                (
-    //                    Id: result.Id ?? 0,
-    //                    NumberOfVotes: result.NumberOfVotes,
-    //                    PoliticalPartyId: result.PoliticalPartyId,
-    //                    PoliticalPartyName: result.PoliticalPartyName ?? "",
-    //                    ElectionConstituencyName: result.ElectionConstituencyName ?? ""
-    //                )
-    //            ).ToList(),
-    //        SeatAllocations: (dto.SeatAllocations ?? [])
-    //            .Select(sa =>
-    //                new OriginalCouncilSeatAllocationResponse
-    //                (
-    //                    Id: sa.Id ?? 0,
-    //                    AllocatedSeats: sa.AllocatedSeat,
-    //                    TotalSeatCountForPartyBeforeAllocation: sa.TotalCouncilSeatCountForParty,
-    //                    ComparisonNumber: sa.ComparisonNumber,
-    //                    AllocationDivisor: sa.AllocationDivisor,
-    //                    PoliticalPartyName: sa.PoliticalPartyName ?? ""
-
-    //                )
-    //            ).ToList(),
-    //        ResultsWithSeats: []
-    //    );
-    //}
+   
 }

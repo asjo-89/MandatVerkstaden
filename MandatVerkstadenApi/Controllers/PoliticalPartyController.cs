@@ -9,7 +9,7 @@ namespace MandatVerkstadenApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PoliticalPartyController(IPoliticalPartyService service) : Controller
+public class PoliticalPartyController(IPoliticalPartyService service) : ControllerBase
 {
     private readonly IPoliticalPartyService _service = service;
 

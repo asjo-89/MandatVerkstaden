@@ -16,10 +16,10 @@ public class User
 
 
     #region Navigation properties
-    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; init; } = [];
-    public ICollection<PartyGroup> PartyGroups { get; set; } = [];
-    public ICollection<RefreshToken> RefreshTokens { get; init; } = [];
-    public ICollection<PoliticalParty> PoliticalParties { get; set; } = [];
-    public ICollection<Scenario> Scenarios { get; set; } = [];
+    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; init; } = new List<OriginalElectionResultSet>();
+    public ICollection<PartyGroup> PartyGroups { get; set; } = new List<PartyGroup>();
+    public ICollection<RefreshToken> RefreshTokens { get; init; } = new List<RefreshToken>();
+    public ICollection<PoliticalParty> PoliticalParties { get; set; } = new List<PoliticalParty>();
+    public ICollection<Scenario> Scenarios { get; set; } = new List<Scenario>();
     #endregion
 }

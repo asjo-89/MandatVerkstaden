@@ -12,7 +12,7 @@ public class Election
 
 
     #region Navigation properties
-    public ICollection<ElectionConstituency> ElectionConstituencies { get; set; } = [];
-    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; set; } = [];
+    public ICollection<ElectionConstituency> ElectionConstituencies { get; set; } = new List<ElectionConstituency>();
+    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; set; } = new List<OriginalElectionResultSet>();
     #endregion
 }

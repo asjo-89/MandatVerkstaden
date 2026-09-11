@@ -1,13 +1,6 @@
-import ResultTable from "../components/tables/resultTable"
-
-
-function Dashboard({ allocatedResults }) {
-
-
-
+function Dashboard() {
   return (
     <>
-        <ResultTable originalAllocationResults={allocatedResults} />
     </>
   )
 }

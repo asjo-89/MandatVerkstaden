@@ -15,8 +15,8 @@ public class Scenario
     public int OriginalElectionResultSetId { get; set; }
     public OriginalElectionResultSet OriginalElectionResultSet { get; set; } = null!;
 
-    public ICollection<PartyGroup> PartyGroups { get; set; } = [];
-    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = [];
-    public ICollection<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; } = [];
+    public ICollection<PartyGroup> PartyGroups { get; set; } = new List<PartyGroup>();
+    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = new List<ScenarioConstituencyVoteResult>();
+    public ICollection<ScenarioCouncilSeatAllocation> ScenarioCouncilSeatAllocations { get; set; } = new List<ScenarioCouncilSeatAllocation>();
     #endregion 
 }

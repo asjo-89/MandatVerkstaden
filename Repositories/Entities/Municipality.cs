@@ -9,8 +9,8 @@ public class Municipality
 
 
     #region Navigation properties
-    public ICollection<ElectionConstituency> ElectionConstituencies { get; set; } = [];
-    public ICollection<PoliticalParty> PoliticalParties { get; set; } = [];
-    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; set; } = [];
+    public ICollection<ElectionConstituency> ElectionConstituencies { get; set; } = new List<ElectionConstituency>();
+    public ICollection<PoliticalParty> PoliticalParties { get; set; } = new List<PoliticalParty>();
+    public ICollection<OriginalElectionResultSet> OriginalElectionResultSets { get; set; } = new List<OriginalElectionResultSet>();
     #endregion
 }

@@ -1,10 +1,9 @@
 .table-container {
     width: auto;
     max-width: 1200px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     border-radius: .5rem;
     overflow: hidden;
-    margin: 0 auto;
 }
 
 table {
@@ -47,5 +46,29 @@ td {
 
 .total-votes-text {
     text-align: right;
-    margin-top: 1rem;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    margin-right: 1rem;
+}
+
+.lot-drawing {
+    background-color: var(--accent-light);    
+}
+
+.lot-drawing-won {
+    background-color: var(--light-green);
+}
+
+.result-tables-container {
+    display: flex;
+    gap: 2rem;
+    width: 100%;
+}
+
+.result-tables-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 2rem;
 }

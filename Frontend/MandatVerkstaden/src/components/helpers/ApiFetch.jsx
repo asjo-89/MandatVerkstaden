@@ -22,7 +22,7 @@ export const ApiFetch = async (apiUrl, options = {}, refresh) => {
     try {
         data = await response.json();
     } catch {
-        // Ignoring JSON parsing error, as the response might not be JSON
+        // Ignoring JSON parsing error because the response might not be JSON
     }
     
     if(!response.ok) {

@@ -1,0 +1,57 @@
+.card-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.card {
+    width: 30em;
+    max-width: 100%;
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.214);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.election-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    gap: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    color: var(--font-clr-white);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.election-card:hover {
+    transform: scale(1.03, 1.03);
+}
+
+.card-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: no-wrap;
+    gap: 1.5rem;
+}
+
+.card-header h3 {
+    color: var(--accent-light);
+}
+
+.card-footer p {
+    font-size: 0.9rem;
+}

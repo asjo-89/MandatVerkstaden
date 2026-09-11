@@ -212,8 +212,6 @@ const handleSubmit = async (e) => {
         alert("Ett fel inträffade vid sparandet av valresultatet.");
         return;
     }
-    alert("Valresultatet har sparats.");
-    console.log("Received allocation results:", data);
     setAllocatedResults(data);    
 }
 

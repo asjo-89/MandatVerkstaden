@@ -3,6 +3,7 @@ using Repositories.Interfaces;
 using Services.Dtos;
 using Services.Helpers;
 using Services.Interfaces;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Services.Services;
 
@@ -50,10 +51,93 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         return ResultSetEntityToDto(result);
     }
 
+    public async Task<OriginalBoardSeatAllocationSetDto?> AddOriginalBoardSeatAllocationSetAsync(OriginalBoardSeatAllocationSetDto dto, Guid userId)
+    {
+        if (dto is null)
+            throw new ArgumentNullException(nameof(dto), "Input parameter cannot be null!");
+
+        var alreadyExists = await _repo.OriginalBoardSeatAllocationExistsAsync(dto.OriginalElectionResultSetId, dto.MaxSeatCount);
+        if (alreadyExists)
+        {
+            var existingAllocations = await _repo.GetOriginalBoardSeatAllocationSetAsync(dto.OriginalElectionResultSetId, dto.MaxSeatCount);
+            if (existingAllocations is null)
+                return null;
+
+            return BoardSeatsEntityDtoToDto(existingAllocations);
+        }
+
+        var resultSet = await _repo.GetOriginalElectionResultSetByIdAsync(dto.OriginalElectionResultSetId, userId);
+        if (resultSet is null)
+            throw new ArgumentNullException(nameof(resultSet), "The list of OriginalElectionResultSet is null.");
+
+        var councilAllocations = resultSet.OriginalCouncilSeatAllocationDtos
+            .Select(x => new OriginalCouncilSeatAllocationDto
+            {
+                Id = x.Id,
+                AllocatedSeat = x.AllocatedSeat,
+                TotalCouncilSeatCountForParty = x.TotalCouncilSeatCountForParty,
+                ComparisonNumber = x.ComparisonNumber,
+                AllocationDivisor = x.AllocationDivisor,
+                PoliticalPartyId = x.PoliticalPartyId,
+                OriginalElectionResultSetId = dto.OriginalElectionResultSetId,
+                WonByLotDrawing = x.WonByLotDrawing
+            });
+
+        dto.OriginalBoardSeatAllocations = BoardSeatAllocationCalculator.CalculateBoardSeatAllocations(councilAllocations, dto.MaxSeatCount);
+
+        var repoSetDto = new OriginalBoardSeatAllocationSet 
+        {
+            MaxSeatCount = dto.MaxSeatCount,
+            OriginalElectionResultSetId = dto.OriginalElectionResultSetId,
+            OriginalBoardSeatAllocations = dto.OriginalBoardSeatAllocations
+            .Select(x => new OriginalBoardSeatAllocation
+            {
+                SeatAllocationStep = x.SeatAllocationStep,
+                ComparisonNumber = x.ComparisonNumber,
+                AllocationDivisor = x.AllocationDivisor,
+                WonSeat = x.WonSeat,
+                WonByLotDrawing = x.WonByLotDrawing,
+                LotDrawingGroupId = x.LotDrawingGroupId,
+                OriginalBoardSeatAllocationSetId = x.OriginalBoardSeatAllocationSetId,
+                PoliticalPartyId = x.PoliticalPartyId
+            }).ToList()
+        };
+
+        var entity = await _repo.AddOriginalBoardSeatAllocation(repoSetDto);
+        if (entity is null)
+            return null;
+
+        await _context.SaveChangesAsync();
+
+        var entityDto = await _repo.GetOriginalBoardSeatAllocationSetAsync(entity.OriginalElectionResultSetId, entity.MaxSeatCount);
+        return entityDto is null
+            ? null 
+            : BoardSeatsEntityDtoToDto(entityDto);
+    }
+
     public async Task<IReadOnlyList<ElectionDto>> GetAllYearsAsync()
     {
         var years = await _repo.GetAllYearsAsync();
         return years.Select(e => new ElectionDto(Id: e.Id, ElectionYear: e.ElectionYear)).ToList();
+    }
+
+    public async Task<IReadOnlyList<OriginalElectionResultSetDto>> GetAllOriginalElectionResultSetsAsync(Guid userId)
+    {
+        if (userId == Guid.Empty)
+            throw new ArgumentException(nameof(userId), "Invalid user id.");
+
+        var resultSet = await _repo.GetAllOriginalElectionResultSetsAsync(userId);
+
+        if (!resultSet.Any())
+            return new List<OriginalElectionResultSetDto>();
+
+        var newDtoList = new List<OriginalElectionResultSetDto>();
+        foreach(var set in resultSet)
+        {
+            newDtoList.Add(ResultSetEntityToDto(set));
+        }
+
+        return newDtoList;
     }
 
     public async Task<OriginalElectionResultSetDto?> GetOriginalElectionResultSetByIdAsync(int id, Guid userId)
@@ -118,14 +202,60 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         return electionResultSet;
     }
 
+    private static OriginalBoardSeatAllocationSetDto BoardSeatsEntityToDto(OriginalBoardSeatAllocationSet entity)
+    {
+        return new OriginalBoardSeatAllocationSetDto
+        {
+            Id = entity.Id,
+            MaxSeatCount = entity.MaxSeatCount,
+            OriginalElectionResultSetId = entity.OriginalElectionResultSetId,
+            OriginalBoardSeatAllocations = entity.OriginalBoardSeatAllocations
+                .Select(x => new OriginalBoardSeatAllocationDto
+                {
+                    Id = x.Id,
+                    SeatAllocationStep = x.SeatAllocationStep,
+                    AllocationDivisor = x.AllocationDivisor,
+                    ComparisonNumber = x.ComparisonNumber,
+                    PoliticalPartyId = x.PoliticalPartyId,
+                    PoliticalPartyName = x.PoliticalParty.Name ?? "",
+                    WonSeat = x.WonSeat,
+                    WonByLotDrawing = x.WonByLotDrawing,
+                    LotDrawingGroupId = x.LotDrawingGroupId
+                }).ToList()
+        };
+    }
 
+    private static OriginalBoardSeatAllocationSetDto BoardSeatsEntityDtoToDto(Repositories.Dtos.OriginalBoardSeatAllocationSetDto entity)
+    {
+        return new OriginalBoardSeatAllocationSetDto
+        {
+            Id = entity.Id,
+            MaxSeatCount = entity.MaxSeatCount,
+            OriginalElectionResultSetId = entity.OriginalElectionResultSetId,
+            OriginalBoardSeatAllocations = entity.OriginalBoardSeatAllocationDtos
+                .Select(a => new OriginalBoardSeatAllocationDto
+                {
+                    Id = a.Id,
+                    SeatAllocationStep = a.SeatAllocationStep,
+                    ComparisonNumber = a.ComparisonNumber,
+                    AllocationDivisor = a.AllocationDivisor,
+                    PoliticalPartyId = a.PoliticalPartyId,
+                    PoliticalPartyName = a.PoliticalPartyName ?? "",
+                    WonSeat = a.WonSeat,
+                    WonByLotDrawing = a.WonByLotDrawing,
+                    LotDrawingGroupId = a.LotDrawingGroupId
+                }).ToList()
+        };
+    }
 
-    private static OriginalElectionResultSetDto ResultSetEntityToDto(Repositories.Dtos.OriginalElectionResultSetDto entityDto)
+private static OriginalElectionResultSetDto ResultSetEntityToDto(Repositories.Dtos.OriginalElectionResultSetDto entityDto)
     {
         return new OriginalElectionResultSetDto
         {
             Id = entityDto.Id,
+            CreatedDate = entityDto.CreatedDate,
             TotalCouncilSeatCount = entityDto.TotalCouncilSeatCount,
+            MunicipalityId = entityDto.MunicipalityId,
             MunicipalityName = entityDto.MunicipalityName,
             ElectionYearId = entityDto.MunicipalityId,
             ElectionYear = entityDto.ElectionYear,
@@ -164,9 +294,10 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
                         AllocationDivisor = boardSeats.AllocationDivisor,
                         SeatAllocationStep = boardSeats.SeatAllocationStep,
                         ComparisonNumber = boardSeats.ComparisonNumber,
+                        WonSeat = boardSeats.WonSeat,
                         WonByLotDrawing = boardSeats.WonByLotDrawing,
                         LotDrawingGroupId = boardSeats.LotDrawingGroupId,
-                        PoliticalPartyName = boardSeats.PoliticalPartyName,
+                        PoliticalPartyName = boardSeats.PoliticalPartyName ?? "",
                         PoliticalPartyId = boardSeats.PoliticalPartyId
                     }).ToList()
             }

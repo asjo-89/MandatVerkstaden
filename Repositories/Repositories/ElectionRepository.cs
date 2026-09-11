@@ -46,6 +46,93 @@ public class ElectionRepository(AppDbContext context) : IElectionRepository
         return await _context.Elections.OrderByDescending(e => e.ElectionYear).ToListAsync();
     }
 
+    public async Task<IReadOnlyList<OriginalElectionResultSetDto>> GetAllOriginalElectionResultSetsAsync(Guid userId)
+    {
+        var electionDtos = await _context.OriginalElectionResultSets
+            .Where(x => x.UserId == userId)
+            .AsNoTracking()
+            .Select(x => new OriginalElectionResultSetDto
+            {
+                Id = x.Id,
+                CreatedDate = x.CreatedDate,
+                TotalCouncilSeatCount = x.TotalCouncilSeatCount,
+                ElectionId = x.ElectionId,
+                ElectionYear = x.Election.ElectionYear,
+                MunicipalityId = x.Municipality.Id,
+                MunicipalityName = x.Municipality.ElectionAreaName ?? "",
+                OriginalCouncilSeatAllocationDtos = x.OriginalCouncilSeatAllocations
+                .Select(y => new OriginalCouncilSeatAllocationDto
+                {
+                    Id = y.Id,
+                    AllocatedSeat = y.AllocatedSeat,
+                    TotalCouncilSeatCountForParty = y.TotalCouncilSeatCountForParty,
+                    ComparisonNumber = y.ComparisonNumber,
+                    AllocationDivisor = y.AllocationDivisor,
+                    WonByLotDrawing = y.WonByLotDrawing,
+                    PoliticalPartyId = y.PoliticalPartyId,
+                    PoliticalPartyName = y.PoliticalParty.Name ?? ""
+                }).OrderBy(y => y.AllocatedSeat).ToList(),
+                OriginalConstituencyVoteResultDtos = x.OriginalConstituencyVoteResults
+                .Select(y => new OriginalConstituencyVoteResultDto
+                {
+                    Id = y.Id,
+                    NumberOfVotes = y.NumberOfVotes,
+                    PoliticalPartyId = y.PoliticalPartyId,
+                    PoliticalPartyName = y.PoliticalParty.Name ?? "",
+                    ElectionConstituencyId = y.ElectionConstituencyId,
+                    ElectionConstituencyName = y.ElectionConstituency.Name ?? ""
+                }).OrderByDescending(y => y.NumberOfVotes).ToList(),
+                OriginalBoardSeatAllocationSetDto = x.OriginalBoardSeatAllocationSet == null
+                ? null
+                : new OriginalBoardSeatAllocationSetDto
+                {
+                    Id = x.OriginalBoardSeatAllocationSet.Id,
+                    MaxSeatCount = x.OriginalBoardSeatAllocationSet.MaxSeatCount,
+                    OriginalElectionResultSetId = x.OriginalBoardSeatAllocationSet.OriginalElectionResultSetId,
+                    OriginalBoardSeatAllocationDtos = x.OriginalBoardSeatAllocationSet.OriginalBoardSeatAllocations
+                        .Select(y => new OriginalBoardSeatAllocationDto
+                        {
+                            Id = y.Id,
+                            SeatAllocationStep = y.SeatAllocationStep,
+                            ComparisonNumber = y.ComparisonNumber,
+                            AllocationDivisor = y.AllocationDivisor,
+                            WonSeat = y.WonSeat,
+                            WonByLotDrawing = y.WonByLotDrawing,
+                            LotDrawingGroupId = y.LotDrawingGroupId,
+                            PoliticalPartyId = y.PoliticalPartyId,
+                            PoliticalPartyName = y.PoliticalParty.Name ?? ""
+                        }).ToList()
+                }
+            }).ToListAsync();
+
+        return electionDtos;
+    }
+
+    public async Task<OriginalBoardSeatAllocationSetDto?> GetOriginalBoardSeatAllocationSetAsync(int originalElectionResultSetId, int maxSeatCount)
+    {
+        return await _context.OriginalBoardSeatAllocationSets
+            .Where(set => set.OriginalElectionResultSetId == originalElectionResultSetId && set.MaxSeatCount == maxSeatCount)
+            .Select(x => new OriginalBoardSeatAllocationSetDto
+            {
+                Id = x.Id,
+                MaxSeatCount = x.MaxSeatCount,
+                OriginalElectionResultSetId = x.OriginalElectionResultSetId,
+                OriginalBoardSeatAllocationDtos = x.OriginalBoardSeatAllocations
+                    .Select(a => new OriginalBoardSeatAllocationDto
+                    {
+                        Id = a.Id,
+                        SeatAllocationStep = a.SeatAllocationStep,
+                        ComparisonNumber = a.ComparisonNumber,
+                        AllocationDivisor = a.AllocationDivisor,
+                        PoliticalPartyId = a.PoliticalPartyId,
+                        PoliticalPartyName = a.PoliticalParty.Name ?? "",
+                        WonSeat = a.WonSeat,
+                        WonByLotDrawing = a.WonByLotDrawing,
+                        LotDrawingGroupId = a.LotDrawingGroupId
+                    }).ToList()
+            }).FirstOrDefaultAsync();
+    }
+
     public async Task<OriginalElectionResultSetDto?> GetOriginalElectionResultSetByIdAsync(int originalElectionResultSetId, Guid userId)
     {
         return await _context.OriginalElectionResultSets
@@ -67,7 +154,7 @@ public class ElectionRepository(AppDbContext context) : IElectionRepository
                         PoliticalPartyId = voteResults.PoliticalPartyId,
                         PoliticalPartyName = voteResults.PoliticalParty.Name,
                         ElectionConstituencyName = voteResults.ElectionConstituency.Name
-                    }).ToList(),
+                    }).OrderBy(x => x.NumberOfVotes).ToList(),
                 OriginalCouncilSeatAllocationDtos = resultSet.OriginalCouncilSeatAllocations
                     .Select(councilSeats => new OriginalCouncilSeatAllocationDto
                     {
@@ -102,41 +189,4 @@ public class ElectionRepository(AppDbContext context) : IElectionRepository
             }).FirstOrDefaultAsync();
     }
 
-    //public async Task<OriginalElectionResultSet?> GetOriginalElectionResultSetByIdAsync(int originalElectionResultSetId)
-    //{
-    //    return await _context.OriginalElectionResultSets
-    //        .Where(set => set.Id == originalElectionResultSetId)
-    //        .Include(set => set.OriginalConstituencyVoteResults)
-    //            .ThenInclude(vr => vr.ElectionConstituency)
-    //        .Include(set => set.OriginalConstituencyVoteResults)
-    //            .ThenInclude(vr => vr.PoliticalParty)
-    //        .Include(set => set.OriginalCouncilSeatAllocations)
-    //            .ThenInclude(sa => sa.PoliticalParty)
-    //        .Include(set => set.Municipality)
-    //        .Include(set => set.Election)
-    //        .FirstOrDefaultAsync();
-    //}
-
-    //public async Task<OriginalElectionResultSet?> GetElectionResultWithBoardSeatAllocationsByIdAsync(int originalElectionResultSetId, Guid userId)
-    //{
-    //    return await _context.OriginalElectionResultSets
-    //        .Where(set => set.Id == originalElectionResultSetId && set.UserId == userId)
-    //        .Include(set => set.OriginalConstituencyVoteResults)
-    //        .Include(set => set.OriginalCouncilSeatAllocations)
-    //            .ThenInclude(x => x.PoliticalParty)
-    //        .Include(set => set.OriginalBoardSeatAllocationSets)
-    //            .ThenInclude(x => x.OriginalBoardSeatAllocations)
-    //            .ThenInclude(y => y.PoliticalParty)
-    //        .FirstOrDefaultAsync();
-    //}
-
-    //public async Task<IReadOnlyList<OriginalElectionResultSet?>> GetOriginalResultsWithSeatAllocationsByIdAsync(int id, Guid userId)
-    //{
-    //    return await _context.OriginalElectionResultSets
-    //        .Where(set => set.Id == id && set.UserId == userId)
-    //        .Include(set => set.OriginalConstituencyVoteResults)
-    //        .Include(set => set.OriginalCouncilSeatAllocations)
-    //            .ThenInclude(seats => seats.PoliticalParty)
-    //        .ToListAsync();
-    //}
 }

@@ -3,6 +3,7 @@
 public record OriginalElectionResultSetDto
 {
     public int Id { get; init; }
+    public DateTime CreatedDate { get; init; }
     public int TotalCouncilSeatCount { get; init; }
     public int ElectionId { get; init; }
     public int ElectionYear { get; init; }

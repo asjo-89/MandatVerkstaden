@@ -3,6 +3,7 @@
 public record OriginalElectionResultSetDto
 {
     public int? Id { get; init; }
+    public DateTime CreatedDate { get; init; }
     public required int TotalCouncilSeatCount { get; init; }
     public int MunicipalityId { get; init; }
     public string MunicipalityName { get; init; } = string.Empty;

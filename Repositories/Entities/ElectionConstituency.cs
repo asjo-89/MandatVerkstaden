@@ -15,7 +15,7 @@ public class ElectionConstituency
     public int MunicipalityId { get; set; }
     public Municipality Municipality { get; set; } = null!;
 
-    public ICollection<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; } = [];
-    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = [];
+    public ICollection<OriginalConstituencyVoteResult> OriginalConstituencyVoteResults { get; set; } = new List<OriginalConstituencyVoteResult>();
+    public ICollection<ScenarioConstituencyVoteResult> ScenarioConstituencyVoteResults { get; set; } = new List<ScenarioConstituencyVoteResult>();
     #endregion
 }
