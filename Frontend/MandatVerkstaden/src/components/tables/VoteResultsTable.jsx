@@ -31,7 +31,7 @@ const VoteResultsTable = ({ originalAllocationResults }) => {
                 <span className="manrope-bold">{totalVotesCount}</span>
             </p>
         </div>
-        </>
+    </>
   )
 }
 

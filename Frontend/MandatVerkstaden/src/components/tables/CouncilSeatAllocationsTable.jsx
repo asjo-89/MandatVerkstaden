@@ -43,8 +43,10 @@ const CouncilSeatAllocationsTable = ({ originalAllocationResults }) => {
                 </tbody>
             </table>
         </div>
+        
     </>
   )
 }
+
 
 export default CouncilSeatAllocationsTable

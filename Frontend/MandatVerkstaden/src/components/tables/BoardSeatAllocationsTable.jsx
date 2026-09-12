@@ -122,32 +122,6 @@ const BoardSeatAllocationsTable = ({ boardSeatAllocationSet, maxSeatCount }) => 
                             })}
                         </tr>
                     ))}
-                    {/* TODO:
-                        Visa alla fördelningar av mandat per parti.
-                        - Sortera partierna efter namn.
-                        - Visa antalet mandat per parti i varje nämnd/styrelse.
-                        - Visa en tom cell om ett parti inte har mandat i en viss nämnd/styrelse.
-                        - Hantera fall där lottning avgör mandatfördelningen.
-
-                        Lista sortering:
-                        - Partinamn
-                        - Antal mandat per nämnd/styrelse (ojämnt antal platser i nämnd, ex 3, 5, 7 platser)
-                        - 1 rad per parti i tabellen. Kolumn 1 partinamn, följt av mandat per nämnd/styrelse.
-
-                        boardSeatAllocationSet.boardSeatAllocations.map(parti => (
-                            <tr key={parti.id}>
-                                <td>{parti.politicalPartyName}</td>
-                                {Array.from({ length: maxBoardSeats }, (_, i) => (
-                                    <td key={i}>
-                                    {parti.seats?.[i] ?? ''}
-                                    // Om ett parti inte har mandat i denna nämnd/styrelse, visa en tom cell.
-                                    // Om lottning avgör mandatfördelningen, visa ex. 3 eller 4 beroende på utfallet.
-                                    </td>
-                                    ))}
-                            </tr>
-                        ))
-                        OrderBy(PoliticalPartyName && SeatAllocationStep && WonSeat)
-                    */}
                 </tbody>
             </table>
         </div>

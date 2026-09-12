@@ -23,10 +23,8 @@
 
 .navigation h1 {
     width: 100%;
-
-    @media (min-width: 1024px) {
-        text-align: center;
-    }
+    text-align: left;
+    margin-bottom: 1rem;
 }
 
 .logo-text {

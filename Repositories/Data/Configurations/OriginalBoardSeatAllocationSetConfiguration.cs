@@ -8,9 +8,9 @@ public class OriginalBoardSeatAllocationSetConfiguration : IEntityTypeConfigurat
 {
     public void Configure(EntityTypeBuilder<OriginalBoardSeatAllocationSet> builder)
     {
-        builder
-            .HasIndex(obsas => new { obsas.OriginalElectionResultSetId, obsas.MaxSeatCount })
-            .IsUnique();
+        //builder
+        //    .HasIndex(obsas => new { obsas.OriginalElectionResultSetId, obsas.MaxSeatCount })
+        //    .IsUnique();
 
         builder
             .HasOne(obsas => obsas.OriginalElectionResultSet)

@@ -12,7 +12,8 @@ const AddElectionResultForm = ({
         setOriginalElectionResults, 
         allPoliticalParties,
         electionYears,
-        setAllocatedResults
+        setAllocatedResults,
+        setSelectedParties
     }) => {
 
 const [selectedPartyId, setSelectedPartyId] = useState('');
@@ -212,7 +213,8 @@ const handleSubmit = async (e) => {
         alert("Ett fel inträffade vid sparandet av valresultatet.");
         return;
     }
-    setAllocatedResults(data);    
+    setAllocatedResults(data);   
+    setSelectedParties(new Set(originalElectionResults.politicalParties.map(party => String(party.id))));
 }
 
   return (

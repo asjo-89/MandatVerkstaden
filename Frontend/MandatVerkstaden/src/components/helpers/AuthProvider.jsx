@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import API_URL from '../../ApiUrl';
+import { ApiFetch } from './ApiFetch';
 
 export const AuthProvider = ({ children }) => {
 
@@ -61,14 +62,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        await fetch(`${API_URL}/auth/logout`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
-        setUser(null);
+        try {
+            await ApiFetch(
+                `${API_URL}/auth/logout`,
+                { method: "POST" },
+                false
+            );
+            setError(null);
+        } catch (catchedError) {
+            setError(catchedError.message || "Kunde inte logga ut. Vänligen försök igen.");
+        } finally {
+            setUser(null);
+        }
     }
 
     const refresh = async () => {

@@ -33,24 +33,24 @@ const TotalCouncilSeatsTable = ({ originalAllocationResults }) => {
 
   return (
     <div className="table-container">
-                <table className="selected-parties-table">
-                    <thead>
-                        <tr className="manrope-bold">
-                            <th className="text-align-left">Parti</th>
-                            <th className="text-align-right">Mandat i KF</th>
-                        </tr>
-                    </thead>
-    
-                    <tbody>
-                        {totalCouncilSeatsForParties?.map(seat => (
-                            <tr key={seat.id}>
-                                <td className="text-align-left">{seat.politicalPartyName}</td>
-                                <td className="text-align-right">{seat.allocatedSeats}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+        <table className="selected-parties-table">
+            <thead>
+                <tr className="manrope-bold">
+                    <th className="text-align-left">Parti</th>
+                    <th className="text-align-right">Mandat</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {totalCouncilSeatsForParties?.map(seat => (
+                    <tr key={seat.id}>
+                        <td className="text-align-left">{seat.politicalPartyName}</td>
+                        <td className="text-align-right">{seat.allocatedSeats}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
   )
 }
 

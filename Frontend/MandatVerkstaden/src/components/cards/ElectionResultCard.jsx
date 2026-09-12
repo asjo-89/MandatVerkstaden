@@ -17,7 +17,7 @@ const ElectionResultCard = ({ originalElectionResult, setAllocatedResults, setSh
                 <p>{originalElectionResult?.election?.electionYear}</p>
             </div>
             <div className="card-footer">
-                <p>Skapad: {originalElectionResult?.createdDate.split("T")[0]}</p>
+                <p>Skapad: {originalElectionResult?.createdDate?.replace('T', ' ').slice(0, 16)}</p>            
             </div>
         </div>
     </>

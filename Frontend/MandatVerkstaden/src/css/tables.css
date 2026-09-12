@@ -72,3 +72,7 @@ td {
     justify-content: flex-start;
     gap: 2rem;
 }
+
+.party-group-item {
+    color: var(--font-clr-primary);
+}

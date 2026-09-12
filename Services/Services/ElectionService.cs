@@ -20,10 +20,10 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         if(!dto.VoteResults.Any())
             throw new ArgumentException("VoteResults cannot be an empty list.", nameof(dto.VoteResults));
 
-        var alreadyExists = await _repo.OriginalElectionResultExistsAsync(dto.UserId, dto.MunicipalityId, dto.ElectionYearId);
+        //var alreadyExists = await _repo.OriginalElectionResultExistsAsync(dto.UserId, dto.MunicipalityId, dto.ElectionYearId);
 
-        if (alreadyExists)
-            throw new InvalidOperationException("An OriginalElectionResultSet already exists with the same user id, municipality id and election year id.");
+        //if (alreadyExists)
+        //    throw new InvalidOperationException("An OriginalElectionResultSet already exists with the same user id, municipality id and election year id.");
 
         var constituencyIds = dto.VoteResults.Select(vr => vr.ElectionConstituencyId).Distinct().ToList();
 
@@ -56,15 +56,15 @@ public class ElectionService(IElectionRepository repo, IUnitOfWork context) : IE
         if (dto is null)
             throw new ArgumentNullException(nameof(dto), "Input parameter cannot be null!");
 
-        var alreadyExists = await _repo.OriginalBoardSeatAllocationExistsAsync(dto.OriginalElectionResultSetId, dto.MaxSeatCount);
-        if (alreadyExists)
-        {
-            var existingAllocations = await _repo.GetOriginalBoardSeatAllocationSetAsync(dto.OriginalElectionResultSetId, dto.MaxSeatCount);
-            if (existingAllocations is null)
-                return null;
+        //var alreadyExists = await _repo.OriginalBoardSeatAllocationExistsAsync(dto.OriginalElectionResultSetId, dto.MaxSeatCount);
+        //if (alreadyExists)
+        //{
+        //    var existingAllocations = await _repo.GetOriginalBoardSeatAllocationSetAsync(dto.OriginalElectionResultSetId, dto.MaxSeatCount);
+        //    if (existingAllocations is null)
+        //        return null;
 
-            return BoardSeatsEntityDtoToDto(existingAllocations);
-        }
+        //    return BoardSeatsEntityDtoToDto(existingAllocations);
+        //}
 
         var resultSet = await _repo.GetOriginalElectionResultSetByIdAsync(dto.OriginalElectionResultSetId, userId);
         if (resultSet is null)

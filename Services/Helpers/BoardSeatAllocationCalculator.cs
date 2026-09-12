@@ -1,5 +1,6 @@
 ﻿using Repositories.Entities;
 using Services.Dtos;
+using System.Runtime.CompilerServices;
 
 namespace Services.Helpers;
 
@@ -88,4 +89,5 @@ internal static class BoardSeatAllocationCalculator
         }
         return partyBoardAllocations;
     }
+
 }

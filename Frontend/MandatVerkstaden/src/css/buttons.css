@@ -15,9 +15,9 @@
 
 .button-primary,
 .btn-primary {
-    background-color: var(--blue-grey);
+    background-color: var(--primary);
     color: var(--font-clr-white);
-    box-shadow: inset 0px 0px 4px var(--dark-blue-grey);
+    box-shadow: inset 0px 0px 4px var(--primary-dark);
     transition: all 0.2s ease-in-out;
 
     &:hover {
@@ -61,4 +61,34 @@
 
 .btn-login {
     width: 100%;
+}
+
+.dialog-close-button,
+.card-delete-button {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-dialog-button {
+    width: 100%;
+}
+
+.toggle-button {
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--light-blue-grey);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+
+    &:hover {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    }
 }

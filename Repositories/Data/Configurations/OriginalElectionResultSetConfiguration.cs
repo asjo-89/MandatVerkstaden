@@ -8,9 +8,9 @@ public class OriginalElectionResultSetConfiguration : IEntityTypeConfiguration<O
 {
     public void Configure(EntityTypeBuilder<OriginalElectionResultSet> builder)
     {
-        builder
-            .HasIndex(oers => new { oers.UserId, oers.MunicipalityId, oers.ElectionId })
-            .IsUnique();
+        //builder
+        //    .HasIndex(oers => new { oers.UserId, oers.MunicipalityId, oers.ElectionId })
+        //    .IsUnique();
 
         builder
             .HasOne(oers => oers.Election)
